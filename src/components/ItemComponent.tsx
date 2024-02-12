@@ -13,7 +13,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove }) => {
                 {item.name}
             </span>
             <span>
-                {'$${item.price.toFixed(2)}'}
+                {`$${item.price.toFixed(2)}`}
             </span>
             <button onClick={()=> onRemove(item.id)}>X</button>
         </div>
