@@ -9,13 +9,13 @@ interface ItemProps{
 const ItemComponent: React.FC<ItemProps> = ({ item, onRemove }) => {
     return(
         <div className="item">
+            <button onClick={()=> onRemove(item.id)}>X</button>
             <span>
                 {item.name}
             </span>
             <span>
-                {`$${item.price.toFixed(2)}`}
+                {"Price: $" + item.price.toFixed(2)}
             </span>
-            <button onClick={()=> onRemove(item.id)}>X</button>
         </div>
     )
 }
