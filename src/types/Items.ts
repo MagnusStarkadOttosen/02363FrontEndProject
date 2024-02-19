@@ -1,9 +1,5 @@
-interface Item{
-    id: String;
-    name: String;
+export interface Item{
+    id: string;
+    name: string;
     price: number;
-    currency: String;
-    rebateQuantity: number;
-    rebatePercent: number;
-    upsellPruductId: String | null;
 }

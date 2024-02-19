@@ -1,6 +1,6 @@
 import React, { useState} from 'react';
 import ItemComponent from "./ItemComponent";
-import {Item} from '../types/Item.ts';
+import { Item } from '../types/Items';
 
 const initItems: Item[] = [
     { id: "item1", name: "name1", price: 150},
