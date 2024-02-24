@@ -11,6 +11,7 @@ interface ItemProps{
 const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange }) => {
     //Tracking quantity defaults to 1.
     const [quantity, setQuantity] = useState(1);
+    const [gift, setGift] = useState(0);
     //Calculates the subtotal based on quantity.
     const subTotal = item.price * quantity;
 
@@ -36,6 +37,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange }
                 onChange={(e) => setQuantity(Number(e.target.value))} //Update quantity state if quantity is changed.
                 min="1" //Set the minimun number to 1.
             />
+            <label>Gift wrap:<input type="checkbox" value={gift} onChange={(e) => setGift(Number(e.target.value))}/></label>
             <span>
                 {"Subtotal: $" + subTotal.toFixed(2)} {/*Display the subtotal.*/}
             </span>
