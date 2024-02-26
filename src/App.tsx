@@ -2,19 +2,15 @@ import { Component, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import ItemList from './components/ItemList.tsx';
+import ItemList from './components/ItemList';
 
 function App() {
   
   return (
-    <>
-      <div className="App">
-        <header className="App-header">
-          <ItemList />
-        </header>
-      </div>
-    </>
-  )
+    <div className="App">
+      <ItemList />
+    </div>
+  );
 
 
   /*
