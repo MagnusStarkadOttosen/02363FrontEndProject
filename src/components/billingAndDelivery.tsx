@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../styles/BillingAndDelivery.css';
 
 const BillingAndDelivery: React.FC = () => {
 
@@ -22,7 +23,7 @@ const BillingAndDelivery: React.FC = () => {
     };
 
     return(
-        <div>
+        <div className='form-wrapper'>
             <div className="row">
                 <div>
                     <label className="control-label" htmlFor="orderFirstName">First Name</label>

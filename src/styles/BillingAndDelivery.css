@@ -1,0 +1,27 @@
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    margin: 5px 0 4px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.control-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-wrapper {
+    background-color: #f0f0f0;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+  }
