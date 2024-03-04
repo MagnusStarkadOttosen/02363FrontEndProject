@@ -1,0 +1,1 @@
+/*This file need to have everything to display total price and discount*/
