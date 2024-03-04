@@ -1,4 +1,4 @@
-#root {
+/*#root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -40,3 +40,20 @@
 .read-the-docs {
   color: #888;
 }
+*/
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.column {
+  flex: 1;
+  padding: 10px;
+}
+
+.infoArea {
+  display: flex;
+  flex-direction: column; /* Stacks total and billing vertically */
+}
+
