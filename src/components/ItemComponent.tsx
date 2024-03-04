@@ -13,23 +13,14 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange }
     const [quantity, setQuantity] = useState(1);
     const [gift, setGift] = useState(0);
     //Calculates the subtotal based on quantity.
-    let subTotal = item.price * quantity;
-    let totalDiscount = 0;
-    //total amount per item to buy
-    item.amount = quantity;
+    const subTotal = item.price * quantity;
+
     //Hook to call onQuantityChange when quantity changes.
     //This informes ItemList of the changes
     useEffect(() => {
         onQuantityChange(item.id, subTotal);
     }, [quantity]); //"quantity" in [] means this effect runs then "quantity" changes.
 
-    //calculate discount per item
-    if(item.amount >= item.rebateQuantity){
-        totalDiscount = subTotal;
-        const discountInDecimal = item.rebatePercent / 100;
-        subTotal = subTotal * (1 - discountInDecimal);
-        totalDiscount = totalDiscount - subTotal;
-    }
     //What is shown for each item.
     return(
         <div className="item">
@@ -37,10 +28,6 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange }
             <span>
                 {item.name} {/*The name of the item*/}
             </span>
-            <span>
-                {", " + item.rebatePercent + "% discount for " + item.rebateQuantity + "pcs, "} {/*Button to remove the item.*/}
-            </span>
-        
             <span>
                 {"Price: $" + item.price.toFixed(2)} {/*Button to remove the item.*/}
             </span>
@@ -54,7 +41,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange }
             <span>
                 {"Subtotal: $" + subTotal.toFixed(2)} {/*Display the subtotal.*/}
             </span>
-            
+           
             <span>
                 {"Discount: $" + totalDiscount.toFixed(2)} {/*Display the subtotal.*/}
             </span>

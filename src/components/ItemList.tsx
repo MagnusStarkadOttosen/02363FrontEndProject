@@ -6,10 +6,10 @@ import { Item } from '../types/Items';
  * This is the hardcoded list of initial items.
  */
 const initItems: Item[] = [
-    { id: "vitamin-d-90-100", name: "D-vitamin, 90ug, 100 stk", price: 116, amount: 0, rebateQuantity: 3, rebatePercent: 10, gift: 0},
-    { id: "vitamin-c-500-250", name: "C-vitamin, 500mg, 250 stk", price: 150, amount: 0, rebateQuantity: 2, rebatePercent: 25, gift: 0},
-    { id: "vitamin-c-depot-500-250", name: "C-vitamin Depot, 500mg, 250 stk", amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: 0},
-    { id: "fish-oil-1000-120", name: "Omega 3 fiskeolie, 1000mg, 120 stk", amount: 0, rebateQuantity: 5, rebatePercent: 10, price: 69, gift: 0},
+    { id: "item1", name: "Apple", price: 150, gift: 0},
+    { id: "item2", name: "Candy", price: 120, gift: 0},
+    { id: "item3", name: "Cake", price: 110, gift: 0},
+    { id: "item4", name: "Cola", price: 100, gift: 0},
 ]
 
 const ItemList: React.FC = () => {
@@ -42,13 +42,7 @@ const ItemList: React.FC = () => {
     };
 
     //The total price for all items
-    let total = Object.values(subtotals).reduce((acc, curr) => acc + curr, 0);
-    let discount = 0;
-    if(total > 300){
-        discount = total;
-        total = total * 0.90;
-        discount = discount - total;
-    }
+    const total = Object.values(subtotals).reduce((acc, curr) => acc + curr, 0);
 
     //Maps each item to an itemComponent and display the total price.
     return(
@@ -57,7 +51,6 @@ const ItemList: React.FC = () => {
                 <ItemComponent key={item.id} item={item} onRemove={removeItem} onQuantityChange={handleQuantityChange} />
             ))}
             <div>Total: ${total.toFixed(2)}</div>
-            <div>Total discount: ${discount.toFixed(2)}</div>
         </div>
     )
 }
