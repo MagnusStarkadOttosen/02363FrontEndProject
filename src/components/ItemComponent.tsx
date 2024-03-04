@@ -54,6 +54,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange }
             <span>
                 {"Subtotal: $" + subTotal.toFixed(2)} {/*Display the subtotal.*/}
             </span>
+            
             <span>
                 {"Discount: $" + totalDiscount.toFixed(2)} {/*Display the subtotal.*/}
             </span>
