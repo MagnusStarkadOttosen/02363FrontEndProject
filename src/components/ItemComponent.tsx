@@ -31,7 +31,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange }
         totalDiscount = totalDiscount - subTotal;
     }
     //What is shown for each item.
-    return(
+   return(
         <div className="item">
             <button onClick={()=> onRemove(item.id)}>X</button> {/*Button to remove the item.*/} 
             <span>
@@ -60,6 +60,9 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange }
             </span>
         </div>
     )
+    
+
+
 }
 
 export default ItemComponent;
