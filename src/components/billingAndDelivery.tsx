@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import '../styles/BillingAndDelivery.css';
 
 const BillingAndDelivery: React.FC = () => {
@@ -20,7 +20,45 @@ const BillingAndDelivery: React.FC = () => {
             ...prevState,
             [name]: value,
         }));
+
+        if(name === "orderZip"){
+            validateZip(value);
+        }
+
+        if (name === 'orderCountry' && formState.orderZip) {
+            validateZip(formState.orderZip);
+        }
     };
+
+    const [zipValid, setZipValid] = useState(true); //For zip
+
+    const validateZip = async (zip: string) => {
+        if (formState.orderCountry === "DK" && zip.length === 4) {
+            try {
+                const response = await fetch(`https://api.dataforsyningen.dk/postnumre/${zip}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.nr) {
+                        setZipValid(true);
+                    } else {
+                        setZipValid(false);
+                    }
+                } else {
+                    setZipValid(false);
+                }
+            } catch (error) {
+                console.error("Failed to validate ZIP code", error);
+                setZipValid(false);
+            }
+        } else {
+            setZipValid(true);
+        }
+    };
+
+    //Revalidate then country changes
+    useEffect(() => {
+        validateZip(formState.orderZip, formState.orderCountry);
+    }, [formState.orderCountry, formState.orderZip]);
 
     return(
         <div className='form-wrapper'>
@@ -54,6 +92,7 @@ const BillingAndDelivery: React.FC = () => {
                 <div>
                     <label className="control-label" htmlFor="orderZip">Zip code</label>
                     <input id="orderZip" className='form-control'type='text' name='orderZip' value={formState.orderZip} onChange={handleInputChange}></input>
+                    {!zipValid && <div className="invalid-feedback">Invalid ZIP code for Denmark.</div>}
                 </div>
                 <div>
                     <label className="control-label" htmlFor="orderCity">City</label>
