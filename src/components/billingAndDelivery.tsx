@@ -30,7 +30,12 @@ const BillingAndDelivery: React.FC = () => {
                 const response = await fetch(`https://api.dataforsyningen.dk/postnumre/${zip}`);
                 if (response.ok) {
                     const data = await response.json();
-                    setZipValid(data.length > 0);
+                    console.log(data);
+                    setZipValid(true);
+                    setFormState(prevState => ({
+                        ...prevState,
+                        orderCity: data.navn, // Update this line according to the actual structure of the API response
+                    }));
                 } else {
                     setZipValid(false);
                 }
