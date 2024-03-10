@@ -52,7 +52,16 @@ const BillingAndDelivery: React.FC = () => {
     const validateEmail = (email: string) => {
         const valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email); //Black magic regex
         setEmailValid(valid);
-    }
+    };
+
+    const [phoneValid, setPhoneValid] = useState(true);
+    const validatePhone = (phone: string, country: string) => {
+        if(country === "DK" && phone.length === 8){
+            setPhoneValid(true);
+        }else{
+            setPhoneValid(false);
+        }
+    };
 
     //Revalidate then country changes
     useEffect(() => {
@@ -63,6 +72,11 @@ const BillingAndDelivery: React.FC = () => {
     useEffect(() => {
         validateEmail(formState.orderEmail);
     }, [formState.orderEmail]);
+
+    //Validate Phone
+    useEffect(() => {
+        validatePhone(formState.orderPhone, formState.orderCountry);
+    }, [formState.orderCountry, formState.orderPhone]);
 
     return (
         <div className='form-wrapper'>
@@ -80,6 +94,7 @@ const BillingAndDelivery: React.FC = () => {
                 <div>
                     <label className="control-label" htmlFor="orderPhone">Phone</label>
                     <input id="orderPhone" className='form-control' type='text' name='orderPhone' value={formState.orderPhone} onChange={handleInputChange}></input>
+                    {!phoneValid && <div className="invalid-feedback">Invalid phone for Denmark.</div>}
                 </div>
                 <div>
                     <label className="control-label" htmlFor="orderEmail">Email</label>
