@@ -22,7 +22,7 @@ const BillingAndDelivery: React.FC = () => {
         }));
     };
 
-    const [zipValid, setZipValid] = useState(true); //For zip
+    const [zipValid, setZipValid] = useState(true); //For zip validation
 
     const validateZip = async (zip: string, country: string) => {
         if (country === "DK") {
@@ -32,9 +32,9 @@ const BillingAndDelivery: React.FC = () => {
                     const data = await response.json();
                     console.log(data);
                     setZipValid(true);
-                    setFormState(prevState => ({
+                    setFormState(prevState => ({ //This changes city. This is bad practice, you shouldn't change a controlled input like this.
                         ...prevState,
-                        orderCity: data.navn, // Update this line according to the actual structure of the API response
+                        orderCity: data.navn,
                     }));
                 } else {
                     setZipValid(false);
@@ -48,10 +48,21 @@ const BillingAndDelivery: React.FC = () => {
         }
     };
 
+    const [emailValid, setEmailValid] = useState(true); //For email validation
+    const validateEmail = (email: string) => {
+        const valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email); //Black magic regex
+        setEmailValid(valid);
+    }
+
     //Revalidate then country changes
     useEffect(() => {
         validateZip(formState.orderZip, formState.orderCountry);
     }, [formState.orderCountry, formState.orderZip]);
+
+    //Validate Email
+    useEffect(() => {
+        validateEmail(formState.orderEmail);
+    }, [formState.orderEmail]);
 
     return (
         <div className='form-wrapper'>
@@ -73,6 +84,7 @@ const BillingAndDelivery: React.FC = () => {
                 <div>
                     <label className="control-label" htmlFor="orderEmail">Email</label>
                     <input id="orderEmail" className='form-control' type='text' name='orderEmail' value={formState.orderEmail} onChange={handleInputChange}></input>
+                    {!emailValid && <div className="invalid-feedback">Invalid email format.</div>}
                 </div>
             </div>
             <div className='row'>
