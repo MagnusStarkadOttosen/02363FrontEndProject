@@ -8,10 +8,13 @@ const BillingAndDelivery: React.FC = () => {
         orderLastName: '',
         orderPhone: '',
         orderEmail: '',
-        orderAddress: '',
+        orderAddress1: '',
+        orderAddress2: '',
         orderZip: '',
         orderCity: '',
         orderCountry: 'DK', // Default to Denmark
+        orderCompany: '',
+        orderVAT: '',
     });
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
@@ -63,6 +66,15 @@ const BillingAndDelivery: React.FC = () => {
         }
     };
 
+    const [vatValid, setVATValid] = useState(true);
+    const validateVAT = (vat: string, country: string) => {
+        if(country === "DK" && vat.length === 8){
+            setVATValid(true);
+        }else{
+            setVATValid(false);
+        }
+    };
+
     //Revalidate then country changes
     useEffect(() => {
         validateZip(formState.orderZip, formState.orderCountry);
@@ -77,6 +89,11 @@ const BillingAndDelivery: React.FC = () => {
     useEffect(() => {
         validatePhone(formState.orderPhone, formState.orderCountry);
     }, [formState.orderCountry, formState.orderPhone]);
+
+    //Validate VAT
+    useEffect(() => {
+        validateVAT(formState.orderVAT, formState.orderCountry);
+    }, [formState.orderCountry, formState.orderVAT]);
 
     return (
         <div className='form-wrapper'>
@@ -104,8 +121,12 @@ const BillingAndDelivery: React.FC = () => {
             </div>
             <div className='row'>
                 <div>
-                    <label className="control-label" htmlFor="orderAddress">Address</label>
-                    <input id="orderAddress" className='form-control' type='text' name='orderAddress' value={formState.orderAddress} onChange={handleInputChange}></input>
+                    <label className="control-label" htmlFor="orderAddress1">Address 1</label>
+                    <input id="orderAddress1" className='form-control' type='text' name='orderAddress1' value={formState.orderAddress1} onChange={handleInputChange}></input>
+                </div>
+                <div>
+                    <label className="control-label" htmlFor="orderAddress2">Address 2</label>
+                    <input id="orderAddress2" className='form-control' type='text' name='orderAddress2' value={formState.orderAddress2} onChange={handleInputChange}></input>
                 </div>
             </div>
             <div className="row">
@@ -130,6 +151,16 @@ const BillingAndDelivery: React.FC = () => {
                             USA
                         </option>
                     </select>
+                </div>
+            </div>
+            <div className="row">
+                <div>
+                    <label className="control-label" htmlFor="orderCompany">Company name</label>
+                    <input id="orderCompany" className='form-control' type='text' name='orderCompany' value={formState.orderCompany} onChange={handleInputChange}></input>
+                </div>
+                <div>
+                    <label className="control-label" htmlFor="orderVAT">VAT</label>
+                    <input id="orderVAT" className='form-control' type='text' name='orderVAT' value={formState.orderVAT} onChange={handleInputChange}></input>
                 </div>
             </div>
         </div>
