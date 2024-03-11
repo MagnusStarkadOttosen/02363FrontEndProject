@@ -1,6 +1,6 @@
 import './App.css'
 import ItemList from './components/ItemList';
-import BillingAndDelivery from './components/BillingAndDelivery';
+import BillingAndDelivery from './components/billingAndDelivery';
 
 function App() {
   
