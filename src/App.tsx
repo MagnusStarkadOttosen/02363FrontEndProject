@@ -1,5 +1,6 @@
 import './App.css'
 import ItemList from './components/ItemList';
+import BillingAndDelivery from './components/billingAndDelivery';
 
 function App() {
   
@@ -18,7 +19,7 @@ function App() {
         </div>
 
         <div className="BillingAndDeliveryArea">
-          placeholder for billing
+          <BillingAndDelivery />
         </div>
 
       </div>
