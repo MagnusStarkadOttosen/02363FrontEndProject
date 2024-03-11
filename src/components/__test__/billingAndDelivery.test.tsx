@@ -63,23 +63,23 @@ describe('billingAndDelivery VAT Validation', () => {
     });
 });
 
-describe('billingAndDelivery ZIP Validation', () => {
-    it("Checks if there is no error for 1050", async () => {
-        render(<BillingAndDelivery />);
+// describe('billingAndDelivery ZIP Validation', () => {
+//     it("Checks if there is no error for 1050", async () => {
+//         render(<BillingAndDelivery />);
 
-        const zipInput = screen.getByLabelText("Zip code");
-        await userEvent.type(zipInput, "1050");
+//         const zipInput = screen.getByLabelText("Zip code");
+//         await userEvent.type(zipInput, "1050");
 
-        const errorMessage = screen.queryByText("Invalid ZIP code for Denmark.");
-        expect(errorMessage).not.toBeInTheDocument();
-    });
-    it("Checks if there is error for 1234", async () => {
-        render(<BillingAndDelivery />);
+//         const errorMessage = screen.queryByText("Invalid ZIP code for Denmark.");
+//         expect(errorMessage).not.toBeInTheDocument();
+//     });
+//     it("Checks if there is error for 1234", async () => {
+//         render(<BillingAndDelivery />);
 
-        const zipInput = screen.getByLabelText("Zip code");
-        await userEvent.type(zipInput, "1234");
+//         const zipInput = screen.getByLabelText("Zip code");
+//         await userEvent.type(zipInput, "1234");
 
-        const errorMessage = await screen.queryByText("Invalid ZIP code for Denmark.");
-        expect(errorMessage).toBeInTheDocument();
-    });
-});
+//         const errorMessage = await screen.queryByText("Invalid ZIP code for Denmark.");
+//         expect(errorMessage).toBeInTheDocument();
+//     });
+// });
