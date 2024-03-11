@@ -18,6 +18,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange, 
     const increaseQuantity = () => setQuantity(prev => prev + 1);
     const decreaseQuantity = () => setQuantity(prev => prev > 0 ? prev - 1 : 0);
     const [gift, setGift] = useState(false);
+    const [substituteItemId, setSubstituteItemId] = useState<string | null>(null);
     //Calculates the subtotal based on quantity.
     let subTotal = item.price * quantity;
     let totalDiscount = 0;
@@ -27,7 +28,11 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange, 
     //This informes ItemList of the changes
     useEffect(() => {
         onQuantityChange(item.id, subTotal);
-    }, [quantity]); //"quantity" in [] means this effect runs then "quantity" changes.
+        const substitute = onFindSubstitute(item);
+        if (substitute) {
+            setSubstituteItemId(substitute.id);
+        }
+    }, [item,onFindSubstitute,quantity]); //"quantity" in [] means this effect runs then "quantity" changes.
 {}
     //calculate discount per item
     if (item.amount >= item.rebateQuantity) {
@@ -43,12 +48,13 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange, 
         <div>
             <img src={item.imageSrc} alt="Image" width="100" height="100" />
             <span> {item.name} </span>
-            <br/><div 
-                style={{ cursor: 'pointer', color: 'blue' }}
-                onClick={() => onFindSubstitute(item)}
-            >
-                offer: {item.offer}
-            </div><br/>
+           
+            {substituteItemId && (
+                <div style={{ cursor: 'pointer', color: 'blue' }}>
+                    Substitute offer: {substituteItemId}
+                </div>
+            )}
+          
             <span>
             <label>Gift wrap <input type="checkbox" checked={gift} onChange={(e) => setGift(e.target.checked)} /></label>
             </span>
@@ -63,14 +69,14 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange, 
                 />
                 <button onClick={increaseQuantity}>+</button>
             </div>
-            <br>
-            {" " + item.rebatePercent + "% discount for " + item.rebateQuantity + "pcs, "}</br> {/*Button to remove the item.*/}
+            
+            {" " + item.rebatePercent + "% discount for " + item.rebateQuantity + "pcs, "} {/*Button to remove the item.*/}
             <span>
                 {" " + subTotal.toFixed(2)} {/*Display the subtotal.*/}
             </span>
-            <br>
+            
             {"( " + totalDiscount.toFixed(2) + ")"} {/*Display the subtotal.*/}
-            </br>
+            
                 <span><Button onClick={() => onRemove(item.id)}>🗑️</Button></span> {/*Button to remove the item.*/}
             
         </div>

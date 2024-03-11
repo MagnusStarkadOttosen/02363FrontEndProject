@@ -25,7 +25,7 @@ const ItemList: React.FC = () => {
     const [subtotals, setSubtotals] = useState<{ [key: string]: number }>({});
     //Function to find a substitute for an item. 
    
-    const findSubstitute = (currentItem: Item) => {
+    const findSubstitute = (currentItem: Item):Item|null => {
     //Filters the items to find the ones with the same type and a higher price.
         const substitutes = items.filter(item => 
             item.type === currentItem.type && item.price > currentItem.price
@@ -94,7 +94,8 @@ const ItemList: React.FC = () => {
                 </thead>
                 <tbody>
                     {items.map(item => (
-                        <ItemComponent key={item.id} item={item} onRemove={removeItem} 
+                        <ItemComponent key={item.id} 
+                        item={item} onRemove={removeItem} 
                         onQuantityChange={handleQuantityChange}
                         onFindSubstitute={() => handleSubstitute(item.id)}/>
                         
