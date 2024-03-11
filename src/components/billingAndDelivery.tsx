@@ -161,6 +161,7 @@ const BillingAndDelivery: React.FC = () => {
                 <div>
                     <label className="control-label" htmlFor="orderVAT">VAT</label>
                     <input id="orderVAT" className='form-control' type='text' name='orderVAT' value={formState.orderVAT} onChange={handleInputChange}></input>
+                    {!vatValid && <div className="invalid-feedback">Invalid VAT for Denmark.</div>}
                 </div>
             </div>
         </div>
