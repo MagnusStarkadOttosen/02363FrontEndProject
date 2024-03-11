@@ -4,6 +4,7 @@
     margin-bottom: 15px;
 }
 
+/* Controls the input box */
 .form-control {
     width: 100%;
     padding: 8px 12px;
@@ -13,12 +14,14 @@
     box-sizing: border-box;
 }
 
+/* Controls the text above the input fields */
 .control-label {
     display: block;
     margin-bottom: 5px;
     color: #333;
 }
 
+/* Adds a background for billing form */
 .form-wrapper {
     background-color: #f0f0f0;
     padding: 20px;
@@ -26,6 +29,7 @@
     border-radius: 8px;
 }
 
+/* This makes the error text of invalid inputs red */
 .invalid-feedback {
     color: red;
 }

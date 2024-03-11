@@ -25,8 +25,8 @@ const BillingAndDelivery: React.FC = () => {
         }));
     };
 
+    //Validation of Zip code only if country is denmark
     const [zipValid, setZipValid] = useState(true); //For zip validation
-
     const validateZip = async (zip: string, country: string) => {
         if (country === "DK") {
             try {
@@ -51,12 +51,15 @@ const BillingAndDelivery: React.FC = () => {
         }
     };
 
+    //Validation of emails. Should be able to catch most emails but perfect validation of email is almost imposible.
     const [emailValid, setEmailValid] = useState(true); //For email validation
     const validateEmail = (email: string) => {
         const valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email); //Black magic regex
         setEmailValid(valid);
     };
 
+    //TODO: it currently rejects all non-danish 8 digit numbers, it should not do this
+    //Validates danish phone numbers are 8 digits
     const [phoneValid, setPhoneValid] = useState(true);
     const validatePhone = (phone: string, country: string) => {
         if(country === "DK" && phone.length === 8){
@@ -66,6 +69,8 @@ const BillingAndDelivery: React.FC = () => {
         }
     };
 
+    //TODO: it currently rejects all non-danish 8 digit VAT numbers, it should not do this
+    //Validates danish VAT numbers are 8 digits
     const [vatValid, setVATValid] = useState(true);
     const validateVAT = (vat: string, country: string) => {
         if(country === "DK" && vat.length === 8){

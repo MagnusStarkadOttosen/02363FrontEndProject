@@ -52,8 +52,9 @@
   padding: 10px;
 }
 
+/* Stacks total and billing vertically */
 .infoArea {
   display: flex;
-  flex-direction: column; /* Stacks total and billing vertically */
+  flex-direction: column;
 }
 

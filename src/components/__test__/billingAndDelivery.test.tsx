@@ -63,6 +63,7 @@ describe('billingAndDelivery VAT Validation', () => {
     });
 });
 
+//TODO: add mock for testing API
 // describe('billingAndDelivery ZIP Validation', () => {
 //     it("Checks if there is no error for 1050", async () => {
 //         render(<BillingAndDelivery />);

@@ -3,7 +3,7 @@ import ItemList from './components/ItemList';
 import BillingAndDelivery from './components/billingAndDelivery';
 
 function App() {
-  
+
   return (
 
     <div className="row">
@@ -14,7 +14,7 @@ function App() {
 
       <div className="InfoArea">
 
-        <div className = "TotalArea">
+        <div className="TotalArea">
           placeholder for total price
         </div>
 
@@ -23,7 +23,6 @@ function App() {
         </div>
 
       </div>
-
 
     </div>
   );
