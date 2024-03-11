@@ -9,7 +9,8 @@ interface ItemProps {
     onQuantityChange: (id: string, subtotal: number) => void; //Function thats called when updating quantity.
 }
 
-const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange }) => {
+const ItemComponent: React.FC<ItemProps & {onFindSubstitute: (currentItem: Item) => void }> = ({ item, onRemove, onQuantityChange, onFindSubstitute }) => {
+    
     //Tracking quantity defaults to 1.
     const [quantity, setQuantity] = useState(1);
     const increaseQuantity = () => setQuantity(prev => prev + 1);
@@ -25,7 +26,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange }
     useEffect(() => {
         onQuantityChange(item.id, subTotal);
     }, [quantity]); //"quantity" in [] means this effect runs then "quantity" changes.
-
+{}
     //calculate discount per item
     if (item.amount >= item.rebateQuantity) {
         totalDiscount = subTotal;
@@ -42,7 +43,16 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange }
             <span>
                 {item.name}
             </span>
+            <br>
+            <div 
+                style={{ cursor: 'pointer', color: 'blue' }}
+                onClick={() => onFindSubstitute(item)}
+            >
+            </div>
+            </br>
+            <span>
             <label>Gift wrap <input type="checkbox" checked={gift} onChange={(e) => setGift(e.target.checked)} /></label>
+            </span>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <button onClick={decreaseQuantity}>-</button>
                 <input //The input for quantity.
