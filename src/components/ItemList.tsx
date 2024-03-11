@@ -25,7 +25,7 @@ const ItemList: React.FC = () => {
     const [subtotals, setSubtotals] = useState<{ [key: string]: number }>({});
     //Function to find a substitute for an item. 
    
-    const findSubstitute = (currentItem: Item):Item|null => {
+    const findSubstitute = (currentItem: Item):Item|undefined => {
     //Filters the items to find the ones with the same type and a higher price.
         const substitutes = items.filter(item => 
             item.type === currentItem.type && item.price > currentItem.price

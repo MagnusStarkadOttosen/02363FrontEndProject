@@ -26,21 +26,24 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange, 
     item.amount = quantity;
     //Hook to call onQuantityChange when quantity changes.
     //This informes ItemList of the changes
-    useEffect(() => {
-        onQuantityChange(item.id, subTotal);
-        const substitute = onFindSubstitute(item);
-        if (substitute) {
-            setSubstituteItemId(substitute.id);
-        }
-    }, [item,onFindSubstitute,quantity]); //"quantity" in [] means this effect runs then "quantity" changes.
-{}
-    //calculate discount per item
-    if (item.amount >= item.rebateQuantity) {
-        totalDiscount = subTotal;
-        const discountInDecimal = item.rebatePercent / 100;
-        subTotal = subTotal * (1 - discountInDecimal);
-        totalDiscount = totalDiscount - subTotal;
-    }
+            useEffect(() => {
+                onQuantityChange(item.id, subTotal);
+                const substituteItem = onFindSubstitute(item);
+                if (substituteItem !== undefined) { // Add condition to check if substitute is not undefined
+                    setSubstituteItemId(substituteItem.id);
+                } else {
+                    setSubstituteItemId(null);
+                }
+            }, [item, onFindSubstitute, quantity, onQuantityChange, subTotal]); //"quantity" in [] means this effect runs then "quantity" changes.
+            {
+                //calculate discount per item
+                if (item.amount >= item.rebateQuantity) {
+                    totalDiscount = subTotal;
+                    const discountInDecimal = item.rebatePercent / 100;
+                    subTotal = subTotal * (1 - discountInDecimal);
+                    totalDiscount = totalDiscount - subTotal;
+                }
+            }
 
     //What is shown for each item.
 
