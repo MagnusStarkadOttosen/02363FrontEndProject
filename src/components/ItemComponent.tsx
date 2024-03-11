@@ -7,9 +7,11 @@ interface ItemProps {
     item: Item; //The details of what the item contains.
     onRemove: (id: string) => void; //Function thats called when removing items.
     onQuantityChange: (id: string, subtotal: number) => void; //Function thats called when updating quantity.
+    onFindSubstitute: (currentItem: Item) => void;
 }
 
-const ItemComponent: React.FC<ItemProps & {onFindSubstitute: (currentItem: Item) => void }> = ({ item, onRemove, onQuantityChange, onFindSubstitute }) => {
+
+const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange, onFindSubstitute }) => {
     
     //Tracking quantity defaults to 1.
     const [quantity, setQuantity] = useState(1);
@@ -40,16 +42,13 @@ const ItemComponent: React.FC<ItemProps & {onFindSubstitute: (currentItem: Item)
     return (
         <div>
             <img src={item.imageSrc} alt="Image" width="100" height="100" />
-            <span>
-                {item.name}
-            </span>
-            <br>
-            <div 
+            <span> {item.name} </span>
+            <br/><div 
                 style={{ cursor: 'pointer', color: 'blue' }}
                 onClick={() => onFindSubstitute(item)}
             >
-            </div>
-            </br>
+                offer: {item.offer}
+            </div><br/>
             <span>
             <label>Gift wrap <input type="checkbox" checked={gift} onChange={(e) => setGift(e.target.checked)} /></label>
             </span>
@@ -64,13 +63,15 @@ const ItemComponent: React.FC<ItemProps & {onFindSubstitute: (currentItem: Item)
                 />
                 <button onClick={increaseQuantity}>+</button>
             </div>
-            {" " + item.rebatePercent + "% discount for " + item.rebateQuantity + "pcs, "} {/*Button to remove the item.*/}
+            <br>
+            {" " + item.rebatePercent + "% discount for " + item.rebateQuantity + "pcs, "}</br> {/*Button to remove the item.*/}
             <span>
                 {" " + subTotal.toFixed(2)} {/*Display the subtotal.*/}
             </span>
+            <br>
             {"( " + totalDiscount.toFixed(2) + ")"} {/*Display the subtotal.*/}
-            
-                <Button onClick={() => onRemove(item.id)}>🗑️</Button> {/*Button to remove the item.*/}
+            </br>
+                <span><Button onClick={() => onRemove(item.id)}>🗑️</Button></span> {/*Button to remove the item.*/}
             
         </div>
     )

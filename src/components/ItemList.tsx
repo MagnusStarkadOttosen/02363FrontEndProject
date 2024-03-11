@@ -16,9 +16,7 @@ const initItems: Item[] = [
     { id: "vitamin-c-500-250", name: "C-vitamin, 500mg, 240 stk", type: "C-vitamin",offer:"", imageSrc: image2, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 150, gift: false },
     { id: "vitamin-c-depot-500-250", name: "C-vitamin Depot, 500mg, 240 stk", type: "C-vitamin",offer:"", imageSrc: image3, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: false },
     { id: "fish-oil-1000-120", name: "Omega 3 fiskeolie, 1000mg, 120 stk", type: "Omega",offer:"", imageSrc: image4, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 69, gift: false },
-    
 ];
-
 
 const ItemList: React.FC = () => {
     //Hook for the list of items.
@@ -26,7 +24,8 @@ const ItemList: React.FC = () => {
     //Hook for tracking the subtotal for each item based on its quantity.
     const [subtotals, setSubtotals] = useState<{ [key: string]: number }>({});
     //Function to find a substitute for an item. 
-    const findSubstitute = (currentItem: Item): Item | undefined => {
+   
+    const findSubstitute = (currentItem: Item) => {
     //Filters the items to find the ones with the same type and a higher price.
         const substitutes = items.filter(item => 
             item.type === currentItem.type && item.price > currentItem.price
@@ -36,6 +35,17 @@ const ItemList: React.FC = () => {
        
         return substitutes[0];
     };
+    const handleSubstitute = (currentItemId: string) => {
+        const newItemList = items.map(item => {
+            if (item.id === currentItemId) {
+                const substituteItem = findSubstitute(item);
+                return substituteItem ? { ...substituteItem, amount: item.amount } : item; // Giữ nguyên số lượng nhưng cập nhật thông tin mặt hàng nếu tìm thấy thay thế
+            }
+            return item;
+        });
+        setItems(newItemList);
+    };
+
     //This calculates the initial subtotal for each item.
     useEffect(() => {
         const initialSubtotals = initItems.reduce((acc, item) => {
@@ -86,13 +96,8 @@ const ItemList: React.FC = () => {
                     {items.map(item => (
                         <ItemComponent key={item.id} item={item} onRemove={removeItem} 
                         onQuantityChange={handleQuantityChange}
-                        onFindSubstitute={(currentItem) => {
-                            const substitute = findSubstitute(currentItem);
-                            if (substitute) {
-                                console.log(`Substitute for ${currentItem.id} == ${substitute.id}`);
-                            }
-                        }}
-                         />
+                        onFindSubstitute={() => handleSubstitute(item.id)}/>
+                        
                     ))}
 
                 </tbody>
