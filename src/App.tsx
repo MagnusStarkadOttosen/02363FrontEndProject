@@ -13,11 +13,11 @@ function App() {
       </div>
 
       <div className="InfoArea">
-
+        {/*
         <div className="TotalArea">
           placeholder for total price
         </div>
-
+        */}
         <div className="BillingAndDeliveryArea">
           <BillingAndDelivery />
         </div>

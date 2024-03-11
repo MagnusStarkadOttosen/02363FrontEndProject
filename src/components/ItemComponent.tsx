@@ -43,7 +43,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange, 
     }
 
     //What is shown for each item.
-
+    //TODO: this need to be completely rewritten. This is why the table is in one column.
     return (
         <div>
             <img src={item.imageSrc} alt="Image" width="100" height="100" />
