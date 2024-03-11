@@ -12,22 +12,36 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.tr{
+  display: table-row;
+  font-size: 1.2em;
+  font-weight: 700;
+  font-weight: bold;
+  
+
+    }
 
 a {
   font-weight: 500;
   color: #646cff;
-  text-decoration: inherit;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  
 }
 a:hover {
   color: #535bf2;
+}
+title {
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align:left;
+
 }
 
 body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  width: 100%;
 }
 
 h1 {
@@ -65,4 +79,19 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+#quantity-selector {
+  display: flex;
+  align-items:start;
+}
+
+#quantity-selector button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+#quantity-selector input {
+  text-align: center;
+  width: 50px;
+  margin: 0 5px;
 }
