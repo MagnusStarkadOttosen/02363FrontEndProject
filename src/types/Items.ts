@@ -5,8 +5,7 @@ export interface Item{
     imageSrc: string;
     price: number;
     amount: number;
-    gift: number;
+    gift: boolean;
     rebateQuantity: number;
     rebatePercent: number;
-
 }
