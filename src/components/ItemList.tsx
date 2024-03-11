@@ -89,7 +89,7 @@ const ItemList: React.FC = () => {
                         onFindSubstitute={(currentItem) => {
                             const substitute = findSubstitute(currentItem);
                             if (substitute) {
-                                alert(`You can substitute ${currentItem.name} with ${substitute.name}`);
+                                console.log(`Substitute for ${currentItem.id} == ${substitute.id}`);
                             }
                         }}
                          />
