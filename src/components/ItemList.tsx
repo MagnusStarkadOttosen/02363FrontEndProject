@@ -12,10 +12,10 @@ import image4 from '../assets/images/omega.jpeg';
  * This is the hardcoded list of initial items.
  */
 const initItems: Item[] = [
-    { id: "vitamin-d-90-100", name: "D-vitamin, 90ug, 100 stk", type: "D-vitamin", imageSrc: image1, price: 116, amount: 0, rebateQuantity: 3, rebatePercent: 10, gift: 0 },
-    { id: "vitamin-c-500-250", name: "C-vitamin, 500mg, 240 stk", type: "C-vitamin", imageSrc: image2, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: 0 },
-    { id: "vitamin-c-depot-500-250", name: "C-vitamin Depot, 500mg, 240 stk", type: "C-vitamin", imageSrc: image3, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: 0 },
-    { id: "fish-oil-1000-120", name: "Omega 3 fiskeolie, 1000mg, 120 stk", type: "Omega", imageSrc: image4, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: 0 }
+    { id: "vitamin-d-90-100", name: "D-vitamin, 90ug, 100 stk", type: "D-vitamin", imageSrc: image1, price: 116, amount: 0, rebateQuantity: 3, rebatePercent: 10, gift: false },
+    { id: "vitamin-c-500-250", name: "C-vitamin, 500mg, 240 stk", type: "C-vitamin", imageSrc: image2, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: false },
+    { id: "vitamin-c-depot-500-250", name: "C-vitamin Depot, 500mg, 240 stk", type: "C-vitamin", imageSrc: image3, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: false },
+    { id: "fish-oil-1000-120", name: "Omega 3 fiskeolie, 1000mg, 120 stk", type: "Omega", imageSrc: image4, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: false }
 ];
 
 const ItemList: React.FC = () => {
