@@ -18,6 +18,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange, 
     const increaseQuantity = () => setQuantity(prev => prev + 1);
     const decreaseQuantity = () => setQuantity(prev => prev > 0 ? prev - 1 : 0);
     const [gift, setGift] = useState(false);
+    // @ts-ignore
     const [substituteItemId, setSubstituteItemId] = useState<string | null>(null);
     //Calculates the subtotal based on quantity.
     let subTotal = item.price * quantity;
@@ -28,10 +29,10 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange, 
     //This informes ItemList of the changes
     useEffect(() => {
         onQuantityChange(item.id, subTotal);
-        const substitute = onFindSubstitute(item);
-        if (substitute) {
-            setSubstituteItemId(substitute.id);
-        }
+        // const substitute = onFindSubstitute(item);
+        // if (substitute) {
+        //     setSubstituteItemId(substitute.id);
+        // }
     }, [item,onFindSubstitute,quantity]); //"quantity" in [] means this effect runs then "quantity" changes.
 {}
     //calculate discount per item
