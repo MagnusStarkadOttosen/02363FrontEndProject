@@ -9,5 +9,5 @@ export interface Item{
     gift: boolean;
     rebateQuantity: number;
     rebatePercent: number;
-    
+    substituteItem: Item|null;
 }

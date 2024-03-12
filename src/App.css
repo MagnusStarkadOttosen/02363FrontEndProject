@@ -1,8 +1,9 @@
-/*#root {
-  max-width: 1280px;
+/* #root {
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem; 
   text-align: center;
+  background-color: rgb(226, 144, 43);
 }
 
 .logo {
@@ -39,22 +40,36 @@
 
 .read-the-docs {
   color: #888;
-}
+} 
 */
 
+/* expand max-width of .row  until 70% of the screen width */
+/* add background color to .row */
+/* add padding to .column */
+
+
 .row {
-  display: flex;
   justify-content: space-between;
+  max-width: 100%;
+  padding: 50px;
 }
 
+
 .column {
-  flex: 1;
+  max-width: 100%;
   padding: 10px;
 }
 
 /* Stacks total and billing vertically */
 .infoArea {
-  display: flex;
-  flex-direction: column;
+
+  max-width: 100%;
+  flex-direction: column; /* Stacks total and billing vertically */
+
+  
 }
 
+.ItemListArea{
+  max-width: 100%;
+ 
+}
