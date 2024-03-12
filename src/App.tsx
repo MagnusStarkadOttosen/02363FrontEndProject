@@ -11,7 +11,7 @@ function App() {
         <ItemList />
       </div>
 
-      <div className="InfoArea">
+      {/* <div className="InfoArea">
 
         <div className = "TotalArea">
           placeholder for total price
@@ -21,7 +21,7 @@ function App() {
           placeholder for billing
         </div>
 
-      </div>
+      </div> */}
 
 
     </div>

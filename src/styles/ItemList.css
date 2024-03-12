@@ -1,13 +1,22 @@
-.table{
+table{
     width: 100%;
-    height: 100%;
-    font-weight: 500;
+    padding: 50px;
+    border-collapse: collapse;
     
   
+  }
+  th, td {
+    padding: 20px;
+    text-align: center;
+    border: 1px solid black;
+    font-size: 1.2;
+   
   }
   thead {
     font-size: 1.5em;
     font-weight: bold;
     text-align:center;
-  
+    display: table-header-group;
+    padding: 50;
   }
+  
