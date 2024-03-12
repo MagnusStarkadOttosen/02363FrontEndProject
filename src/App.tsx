@@ -1,8 +1,9 @@
 import './App.css'
 import ItemList from './components/ItemList';
+import BillingAndDelivery from './components/billingAndDelivery';
 
 function App() {
-  
+
   return (
 
     <div className="row">
@@ -11,18 +12,20 @@ function App() {
         <ItemList />
       </div>
 
-      {/* <div className="InfoArea">
 
-        <div className = "TotalArea">
+
+      <div className="InfoArea">
+        {/*
+        <div className="TotalArea">
+
           placeholder for total price
         </div>
-
+        */}
         <div className="BillingAndDeliveryArea">
-          placeholder for billing
+          <BillingAndDelivery />
         </div>
 
       </div> */}
-
 
     </div>
   );

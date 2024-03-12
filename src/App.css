@@ -60,9 +60,13 @@
   padding: 10px;
 }
 
+/* Stacks total and billing vertically */
 .infoArea {
+
   max-width: 100%;
   flex-direction: column; /* Stacks total and billing vertically */
+
+  
 }
 
 .ItemListArea{

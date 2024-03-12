@@ -19,7 +19,9 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange,h
     const increaseQuantity = () => setQuantity(prev => prev + 1);
     const decreaseQuantity = () => setQuantity(prev => prev > 0 ? prev - 1 : 0);
     const [gift, setGift] = useState(false);
+
     const substituteItemId = item.substituteItem?.id;
+
 
     //Calculates the subtotal based on quantity.
     let subTotal = item.price * quantity;
@@ -28,6 +30,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange,h
     item.amount = quantity;
     //Hook to call onQuantityChange when quantity changes.
     //This informes ItemList of the changes
+
             useEffect(() => {
                 // if (substituteItemId) {
                 //     onFindSubstitute(item);
@@ -45,8 +48,9 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange,h
                 }
             }
 
-    //What is shown for each item.
 
+    //What is shown for each item.
+    //TODO: this need to be completely rewritten. This is why the table is in one column.
     return (
         //The item details.
             <tr>
