@@ -47,9 +47,9 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange, 
     //TODO: this need to be completely rewritten. This is why the table is in one column.
     return (
         <div>
-            <img src={item.imageSrc} alt="Image" width="100" height="100" />
+            <img src={item.imageUrl} alt="Image" width="100" height="100" />
             <span> {item.name} </span>
-           
+            <h1>{item.rebateQuantity}</h1>
             {substituteItemId && (
                 <div style={{ cursor: 'pointer', color: 'blue' }}>
                     Substitute offer: {substituteItemId}
