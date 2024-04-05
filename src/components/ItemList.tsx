@@ -12,10 +12,10 @@ import image4 from '../assets/images/omega.jpeg';
  * This is the hardcoded list of initial items.
  */
 const initItems: Item[] = [
-    { id: "vitamin-d-90-100", name: "D-vitamin, 90ug, 100 stk", type: "D-vitamin",offer:"", imageSrc: image1, price: 116, amount: 0, rebateQuantity: 3, rebatePercent: 10, gift: false },
-    { id: "vitamin-c-500-250", name: "C-vitamin, 500mg, 240 stk", type: "C-vitamin",offer:"", imageSrc: image2, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 150, gift: false },
-    { id: "vitamin-c-depot-500-250", name: "C-vitamin Depot, 500mg, 240 stk", type: "C-vitamin",offer:"", imageSrc: image3, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: false },
-    { id: "fish-oil-1000-120", name: "Omega 3 fiskeolie, 1000mg, 120 stk", type: "Omega",offer:"", imageSrc: image4, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 69, gift: false },
+    { id: "vitamin-d-90-100", name: "D-vitamin, 90ug, 100 stk", type: "D-vitamin",offer:"",substituteItem:null, imageSrc: image1, price: 116, amount: 0, rebateQuantity: 3, rebatePercent: 10, gift: false },
+    { id: "vitamin-c-500-250", name: "C-vitamin, 500mg, 240 stk", type: "C-vitamin",offer:"",substituteItem:null, imageSrc: image2, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 150, gift: false },
+    { id: "vitamin-c-depot-500-250", name: "C-vitamin Depot, 500mg, 240 stk", type: "C-vitamin",offer:"",substituteItem:null, imageSrc: image3, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: false },
+    { id: "fish-oil-1000-120", name: "Omega 3 fiskeolie, 1000mg, 120 stk", type: "Omega",offer:"",substituteItem:null, imageSrc: image4, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 69, gift: false },
 ];
 
 const ItemList: React.FC = () => {
@@ -25,9 +25,9 @@ const ItemList: React.FC = () => {
     const [subtotals, setSubtotals] = useState<{ [key: string]: number }>({});
     //Function to find a substitute for an item. 
    
-    const findSubstitute = (currentItem: Item):Item|null => {
+    const findSubstitute = (currentItem: Item):Item|undefined => {
     //Filters the items to find the ones with the same type and a higher price.
-        const substitutes = items.filter(item => 
+        let substitutes = items.filter(item => 
             item.type === currentItem.type && item.price > currentItem.price
         );
         //Sorts the substitutes by price and returns the first one.
@@ -35,15 +35,13 @@ const ItemList: React.FC = () => {
        
         return substitutes[0];
     };
+    //Function to handle the substitute button.
     const handleSubstitute = (currentItemId: string) => {
-        const newItemList = items.map(item => {
-            if (item.id === currentItemId) {
-                const substituteItem = findSubstitute(item);
-                return substituteItem ? { ...substituteItem, amount: item.amount } : item; // Giữ nguyên số lượng nhưng cập nhật thông tin mặt hàng nếu tìm thấy thay thế
-            }
-            return item;
-        });
-        setItems(newItemList);
+        const currentItem = items.find(item => item.id === currentItemId); //Finds the current item.
+        const newItem = currentItem ? findSubstitute(currentItem) : undefined; //Finds the substitute.
+        if (currentItem && newItem) {
+         currentItem.substituteItem = newItem;
+        }
     };
 
     //This calculates the initial subtotal for each item.
@@ -81,30 +79,45 @@ const ItemList: React.FC = () => {
 
     //Maps each item to an itemComponent and display the total price.
     return (
-        <>
-            <Table striped bordered hover>
+        <> 
+        <h2>List Of Products</h2>
+            <Table>
                 <thead>
                     <tr>
                         <th>Product</th>
+                        <th ></th>
                         <th></th>
                         <th>Quantity</th>
                         <th>Subtotal</th>
-                        <th></th>
+                        <th ></th>
                     </tr>
                 </thead>
                 <tbody>
                     {items.map(item => (
-                        <ItemComponent key={item.id} 
-                        item={item} onRemove={removeItem} 
-                        onQuantityChange={handleQuantityChange}
-                        onFindSubstitute={() => handleSubstitute(item.id)}/>
-                        
+                        <ItemComponent
+                            key={item.id}
+                            item={item}
+                            onRemove={removeItem}
+                            onQuantityChange={handleQuantityChange}
+                            onFindSubstitute={() => handleSubstitute(item.id)}
+                            handleSubstitute={() => handleSubstitute(item.id)} // Add the missing handleSubstitute property
+                        />
                     ))}
-
                 </tbody>
             </Table>
-            <div>Total: ${total.toFixed(2)}</div>
-            <div>Total discount: ${discount.toFixed(2)}</div>
+            <div className='totalprice'>
+                <h2> Total price </h2>
+                <table>
+                <tbody>
+                 <div className='a'> {items.length} products: </div>
+                 <div className='b'> ${total} </div>
+                <div className='a' >Total discount:</div>
+                <div className='b'> ${discount.toFixed(2)}</div>
+                 <div className='a'>Total: </div>
+                 <div className='b'> ${total.toFixed(2)}</div>
+                 </tbody>
+                 </table>
+            </div>
         </>
     )
 }

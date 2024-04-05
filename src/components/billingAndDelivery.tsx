@@ -101,6 +101,9 @@ const BillingAndDelivery: React.FC = () => {
     }, [formState.orderCountry, formState.orderVAT]);
 
     return (
+        <div>
+            <h2>Billing and Delivery</h2>
+        
         <div className='form-wrapper'>
             <div className="row">
                 <div>
@@ -169,6 +172,7 @@ const BillingAndDelivery: React.FC = () => {
                     {!vatValid && <div className="invalid-feedback">Invalid VAT for Denmark.</div>}
                 </div>
             </div>
+        </div>
         </div>
     )
 
