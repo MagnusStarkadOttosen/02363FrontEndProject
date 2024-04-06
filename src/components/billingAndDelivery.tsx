@@ -10,13 +10,6 @@ const BillingAndDelivery: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [submissionError, setSubmissionError] = useState('');
 
-    const [billingAddress, setBillingAddress] = useState({
-        billingAddress: '',
-        billingZip: '',
-        billingCity: '',
-        billingCountry: 'DK', // Default to Denmark
-    });
-
     const [formState, setFormState] = useState({
         orderFirstName: '',
         orderLastName: '',
@@ -29,6 +22,10 @@ const BillingAndDelivery: React.FC = () => {
         orderCountry: 'DK', // Default to Denmark
         orderCompany: '',
         orderVAT: '',
+        billingAddress: '',
+        billingZip: '',
+        billingCity: '',
+        billingCountry: 'DK', // Default to Denmark
     });
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
@@ -227,11 +224,11 @@ const BillingAndDelivery: React.FC = () => {
                     <div className='row'>
                         <div>
                             <label className="control-label" htmlFor="billingAddress">Billing address</label>
-                            <input id="billingAddress" className='form-control' type='text' name='billingAddress' value={billingAddress.billingAddress} onChange={handleInputChange}></input>
+                            <input id="billingAddress" className='form-control' type='text' name='billingAddress' value={formState.billingAddress} onChange={handleInputChange}></input>
                         </div>
                         <div>
                     <label className="control-label" htmlFor="billingCountry">Country</label>
-                    <select id='billingCountry' className='form-control' name='billingCountry' value={billingAddress.billingCountry} onChange={handleInputChange}>
+                    <select id='billingCountry' className='form-control' name='billingCountry' value={formState.billingCountry} onChange={handleInputChange}>
                         <option value="DK">
                             Denmark
                         </option>
@@ -241,12 +238,12 @@ const BillingAndDelivery: React.FC = () => {
                     <div className="row">
                         <div>
                             <label className="control-label" htmlFor="billingZip">Zip code</label>
-                            <input id="billingZip" className='form-control' type='text' name='billingZip' value={billingAddress.billingZip} onChange={handleInputChange}></input>
+                            <input id="billingZip" className='form-control' type='text' name='billingZip' value={formState.billingZip} onChange={handleInputChange}></input>
                             {!zipValid && <div className="invalid-feedback">Invalid ZIP code for Denmark.</div>}
                         </div>
                         <div>
                             <label className="control-label" htmlFor="billingCity">City</label>
-                            <input id="billingCity" className='form-control' type='text' name='billingCity' value={billingAddress.billingCity} onChange={handleInputChange}></input>
+                            <input id="billingCity" className='form-control' type='text' name='billingCity' value={formState.billingCity} onChange={handleInputChange}></input>
                         </div>
                     </div>
                 </div>
