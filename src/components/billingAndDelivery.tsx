@@ -263,6 +263,11 @@ const BillingAndDelivery: React.FC = () => {
                 <label className="control-label" htmlFor="orderComment">OrderComment (Optional)</label>
                 <textarea id="orderComment" className="form-control" value={orderComment} onChange={(e) => setOrderComment(e.target.value)}></textarea>
             </div>
+            <div>
+                <form onSubmit={handleSubmit}>
+                    <button type="submit">Submit Order</button>
+                </form>
+            </div>
         </div>
     )
 
