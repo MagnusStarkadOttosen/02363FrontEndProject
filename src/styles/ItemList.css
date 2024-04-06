@@ -12,13 +12,20 @@ thead {
   text-align:center;
 
 }
+.product_area{
+  margin-bottom: 5rem;
+  margin-right: 3.5rem;
+  display: block;
+  grid-area: main;
+}
 /* Adds a background for TotalPrice form */
 .totalprice{
   background-color: #f0f0f0;
-  padding-left: 3.75rem;
-  margin-bottom: 5rem;
+  padding: 20px;
+  margin: 20px 0;
   border-radius: 8px;
   grid-area: aside;
+  display: flex;
 }
 .a{
   font-size: 1.5em;
@@ -28,4 +35,9 @@ thead {
 .b{
   font-size: 1.5em;
 
+}
+.h2{
+  font-size: 1.5em;
+  font-weight: bold; 
+  text-align:center;
 }

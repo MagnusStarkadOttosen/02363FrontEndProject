@@ -6,6 +6,7 @@ import image1 from '../assets/images/d3-vitamin.jpeg';
 import image2 from '../assets/images/c-vitamin-500.jpeg';
 import image3 from '../assets/images/c-vitamin-depot.jpeg';
 import image4 from '../assets/images/omega.jpeg';
+import { i } from 'vitest/dist/reporters-MmQN-57K.js';
 
 
 /**
@@ -41,8 +42,27 @@ const ItemList: React.FC = () => {
         const newItem = currentItem ? findSubstitute(currentItem) : undefined; //Finds the substitute.
         if (currentItem && newItem) {
          currentItem.substituteItem = newItem;
+         handleItemList(currentItemId);
         }
+
     };
+    // function to check if there are two items with the same name and price, it will keep one and increase the quantity 
+    const handleItemList =(currentItemId: string)=>{
+      let updatedItems=[...items];
+      const currentItemIndex = updatedItems.findIndex(item=>item.id===currentItemId);
+      if(currentItemIndex>-1){
+        const currentItem=updatedItems[currentItemIndex];
+        const newItemIndex = updatedItems.findIndex(item=>item.id===currentItem.substituteItem?.id&& item.price===currentItem.substituteItem?.price);
+        if(newItemIndex>-1){
+          updatedItems[newItemIndex].amount =updatedItems[currentItemIndex].amount+1;
+          updatedItems.splice(newItemIndex,1);
+        }
+    }
+     setItems(updatedItems);
+    
+    }
+
+    items.forEach(item => {handleSubstitute(item.id)});
 
     //This calculates the initial subtotal for each item.
     useEffect(() => {
@@ -69,18 +89,25 @@ const ItemList: React.FC = () => {
 
     //The total price for all items
     let total = Object.values(subtotals).reduce((acc, curr) => acc + curr, 0);
+    console.log(total);
     let discount = 0;
+    let totalefterdiscount = 0;
     if (total > 300) {
         discount = total;
-        total = total * 0.90;
-        discount = discount - total;
-    }
+        totalefterdiscount = total * 0.90;
+        discount = discount - totalefterdiscount;
+    } 
+    console.log(total);
 
 
     //Maps each item to an itemComponent and display the total price.
     return (
         <> 
         <h2>List Of Products</h2>
+        <tbody>
+        <tr>
+            <td>
+            <div className='product_area'>
             <Table>
                 <thead>
                     <tr>
@@ -105,19 +132,31 @@ const ItemList: React.FC = () => {
                     ))}
                 </tbody>
             </Table>
+            </div>
+            </td>
+            <td>
             <div className='totalprice'>
                 <h2> Total price </h2>
                 <table>
                 <tbody>
-                 <div className='a'> {items.length} products: </div>
-                 <div className='b'> ${total} </div>
-                <div className='a' >Total discount:</div>
-                <div className='b'> ${discount.toFixed(2)}</div>
-                 <div className='a'>Total: </div>
-                 <div className='b'> ${total.toFixed(2)}</div>
+                <tr>
+                 <td className='a'> {items.length} products: </td>
+                 <td className='b'> ${total.toFixed(2)} </td>
+                 </tr>
+                 <tr>
+                <td className='a' >Total discount:</td>
+                <td className='b'> ${discount.toFixed(2)}</td>
+                </tr>
+                <tr>
+                 <td className='a'>Total: </td>
+                 <td className='b'> ${totalefterdiscount.toFixed(2)}</td>
+                 </tr>
                  </tbody>
                  </table>
             </div>
+            </td>
+            </tr>
+            </tbody>
         </>
     )
 }

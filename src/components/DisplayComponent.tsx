@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import ItemList from './ItemList';
-import BillingAndDelivery from './BillingAndDelivery';
-import PaymentMethod from './PaymentMethod';
-import ConfirmOrderView from './ConfirmOrder'; 
+import React, { useState } from "react";
+import ItemList from "./ItemList";
+import BillingAndDelivery from "./BillingAndDelivery";
+import PaymentMethod from "./PaymentMethod";
+import ConfirmOrderView from "./ConfirmOrderView";
 
 function DisplayComponent() {
   const [status, setStatus] = useState("ProductSelection");
@@ -36,7 +36,7 @@ function DisplayComponent() {
         <div>
           <BillingAndDelivery />
           <button onClick={goToProductSelection}>Back</button>
-          <button onClick={goToPaymentMethod}>Next</button> 
+          <button onClick={goToPaymentMethod}>Next</button>
         </div>
       );
     case "PaymentMethod":
