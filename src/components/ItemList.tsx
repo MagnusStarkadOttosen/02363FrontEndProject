@@ -42,11 +42,11 @@ const ItemList: React.FC = () => {
         const newItem = currentItem ? findSubstitute(currentItem) : undefined; //Finds the substitute.
         if (currentItem && newItem) {
          currentItem.substituteItem = newItem;
-         handleItemList(currentItemId);
+         
         }
 
     };
-    // function to check if there are two items with the same name and price, it will keep one and increase the quantity 
+    // function to handle the list of items
     const handleItemList =(currentItemId: string)=>{
       let updatedItems=[...items];
       const currentItemIndex = updatedItems.findIndex(item=>item.id===currentItemId);
@@ -127,7 +127,8 @@ const ItemList: React.FC = () => {
                             onRemove={removeItem}
                             onQuantityChange={handleQuantityChange}
                             onFindSubstitute={() => handleSubstitute(item.id)}
-                            handleSubstitute={() => handleSubstitute(item.id)} // Add the missing handleSubstitute property
+                            handleSubstitute={() => handleSubstitute(item.id)}
+                                
                         />
                     ))}
                 </tbody>
