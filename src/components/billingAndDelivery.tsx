@@ -3,6 +3,20 @@ import '../styles/BillingAndDelivery.css';
 
 const BillingAndDelivery: React.FC = () => {
 
+    const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+    const [isMarketingAccepted, setIsMarketingAccepted] = useState(true);
+    const [orderComment, setOrderComment] = useState("");
+    const [isBillingDifferent, setIsBillingDifferent] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [submissionError, setSubmissionError] = useState('');
+
+    const [billingAddress, setBillingAddress] = useState({
+        billingAddress: '',
+        billingZip: '',
+        billingCity: '',
+        billingCountry: 'DK', // Default to Denmark
+    });
+
     const [formState, setFormState] = useState({
         orderFirstName: '',
         orderLastName: '',
@@ -100,6 +114,44 @@ const BillingAndDelivery: React.FC = () => {
         validateVAT(formState.orderVAT, formState.orderCountry);
     }, [formState.orderCountry, formState.orderVAT]);
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if(!isTermsAccepted){
+            alert("Please accept the terms and conditions.");
+            return;
+        }
+
+        setIsLoading(true);
+        setSubmissionError("");
+
+        try{
+            const response = await fetch("https://eoqbb4g980b4bm3.m.pipedream.net", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    ...formState,
+                    isTermsAccepted,
+                    isMarketingAccepted,
+                    orderComment,
+                    isBillingDifferent,
+                    billingAddress: isBillingDifferent ? billingAddress : null, //only include this if isBillingDifferent is true
+                }),
+            });
+
+            if(!response.ok) throw new Error("something went wrong.");
+
+            alert("Form submitted successfully!");
+        } catch (e){
+            console.error("submission error: ", e)
+        } finally{
+            setIsLoading(false);
+        }
+
+    }
+
     return (
         <div className='form-wrapper'>
             <div className="row">
@@ -152,9 +204,6 @@ const BillingAndDelivery: React.FC = () => {
                         <option value="DK">
                             Denmark
                         </option>
-                        <option value="US">
-                            USA
-                        </option>
                     </select>
                 </div>
             </div>
@@ -168,6 +217,51 @@ const BillingAndDelivery: React.FC = () => {
                     <input id="orderVAT" className='form-control' type='text' name='orderVAT' value={formState.orderVAT} onChange={handleInputChange}></input>
                     {!vatValid && <div className="invalid-feedback">Invalid VAT for Denmark.</div>}
                 </div>
+            </div>
+            <div className="checkbox">
+                <input type='checkbox' id="billingDifferent" checked={isBillingDifferent} onChange={(e)=>setIsBillingDifferent(e.target.checked)} />
+                <label className="checkbox-label" htmlFor="billingDifferent">Billing address is different from delivery address</label>
+            </div>
+            {isBillingDifferent && (
+                <div className="billing-address-fields">
+                    <div className='row'>
+                        <div>
+                            <label className="control-label" htmlFor="billingAddress">Billing address</label>
+                            <input id="billingAddress" className='form-control' type='text' name='billingAddress' value={billingAddress.billingAddress} onChange={handleInputChange}></input>
+                        </div>
+                        <div>
+                    <label className="control-label" htmlFor="billingCountry">Country</label>
+                    <select id='billingCountry' className='form-control' name='billingCountry' value={billingAddress.billingCountry} onChange={handleInputChange}>
+                        <option value="DK">
+                            Denmark
+                        </option>
+                    </select>
+                </div>
+                    </div>
+                    <div className="row">
+                        <div>
+                            <label className="control-label" htmlFor="billingZip">Zip code</label>
+                            <input id="billingZip" className='form-control' type='text' name='billingZip' value={billingAddress.billingZip} onChange={handleInputChange}></input>
+                            {!zipValid && <div className="invalid-feedback">Invalid ZIP code for Denmark.</div>}
+                        </div>
+                        <div>
+                            <label className="control-label" htmlFor="billingCity">City</label>
+                            <input id="billingCity" className='form-control' type='text' name='billingCity' value={billingAddress.billingCity} onChange={handleInputChange}></input>
+                        </div>
+                    </div>
+                </div>
+            )}
+            <div className="checkbox">
+                <input type='checkbox' id="terms" checked={isTermsAccepted} onChange={(e)=>setIsTermsAccepted(e.target.checked)} />
+                <label className="checkbox-label" htmlFor="terms">I accept the terms and conditions</label>
+            </div>
+            <div className="checkbox">
+                <input type='checkbox' id="marketing" checked={isMarketingAccepted} onChange={(e)=>setIsMarketingAccepted(e.target.checked)} />
+                <label className="checkbox-label" htmlFor="marketing">I want to receive spam</label>
+            </div>
+            <div className='commentBox'>
+                <label className="control-label" htmlFor="orderComment">OrderComment (Optional)</label>
+                <textarea id="orderComment" className="form-control" value={orderComment} onChange={(e) => setOrderComment(e.target.value)}></textarea>
             </div>
         </div>
     )
