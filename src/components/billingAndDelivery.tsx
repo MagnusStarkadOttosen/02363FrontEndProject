@@ -62,6 +62,32 @@ const BillingAndDelivery: React.FC = () => {
         }
     };
 
+    //Validation of Zip code only if country is denmark
+    const [zipBillingValid, setBillingZipValid] = useState(true); //For zip validation
+    const validateBillingZip = async (zip: string, country: string) => {
+        if (country === "DK") {
+            try {
+                const response = await fetch(`https://api.dataforsyningen.dk/postnumre/${zip}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                    setBillingZipValid(true);
+                    setFormState(prevState => ({ //This changes city. This is bad practice, you shouldn't change a controlled input like this.
+                        ...prevState,
+                        billingCity: data.navn,
+                    }));
+                } else {
+                    setBillingZipValid(false);
+                }
+            } catch (error) {
+                console.error("Failed to validate ZIP code", error);
+                setBillingZipValid(false);
+            }
+        } else {
+            setBillingZipValid(true); //If not denmark assume zip is correct
+        }
+    };
+
     //Validation of emails. Should be able to catch most emails but perfect validation of email is almost imposible.
     const [emailValid, setEmailValid] = useState(true); //For email validation
     const validateEmail = (email: string) => {
@@ -95,6 +121,10 @@ const BillingAndDelivery: React.FC = () => {
     useEffect(() => {
         validateZip(formState.orderZip, formState.orderCountry);
     }, [formState.orderCountry, formState.orderZip]);
+
+    useEffect(() => {
+        validateBillingZip(formState.billingZip, formState.billingCountry);
+    }, [formState.billingCountry, formState.billingZip]);
 
     //Validate Email
     useEffect(() => {
@@ -134,7 +164,6 @@ const BillingAndDelivery: React.FC = () => {
                     isMarketingAccepted,
                     orderComment,
                     isBillingDifferent,
-                    billingAddress: isBillingDifferent ? billingAddress : null, //only include this if isBillingDifferent is true
                 }),
             });
 
@@ -227,7 +256,7 @@ const BillingAndDelivery: React.FC = () => {
                             <input id="billingAddress" className='form-control' type='text' name='billingAddress' value={formState.billingAddress} onChange={handleInputChange}></input>
                         </div>
                         <div>
-                    <label className="control-label" htmlFor="billingCountry">Country</label>
+                    <label className="control-label" htmlFor="billingCountry">Billing Country</label>
                     <select id='billingCountry' className='form-control' name='billingCountry' value={formState.billingCountry} onChange={handleInputChange}>
                         <option value="DK">
                             Denmark
@@ -237,12 +266,12 @@ const BillingAndDelivery: React.FC = () => {
                     </div>
                     <div className="row">
                         <div>
-                            <label className="control-label" htmlFor="billingZip">Zip code</label>
+                            <label className="control-label" htmlFor="billingZip">Billing Zip code</label>
                             <input id="billingZip" className='form-control' type='text' name='billingZip' value={formState.billingZip} onChange={handleInputChange}></input>
                             {!zipValid && <div className="invalid-feedback">Invalid ZIP code for Denmark.</div>}
                         </div>
                         <div>
-                            <label className="control-label" htmlFor="billingCity">City</label>
+                            <label className="control-label" htmlFor="billingCity">Billing City</label>
                             <input id="billingCity" className='form-control' type='text' name='billingCity' value={formState.billingCity} onChange={handleInputChange}></input>
                         </div>
                     </div>
@@ -261,10 +290,11 @@ const BillingAndDelivery: React.FC = () => {
                 <textarea id="orderComment" className="form-control" value={orderComment} onChange={(e) => setOrderComment(e.target.value)}></textarea>
             </div>
             <div>
-                <form onSubmit={handleSubmit}>
-                    <button type="submit">Submit Order</button>
-                </form>
+                <button onClick={handleSubmit} type="button">Submit Order</button>
             </div>
+            {
+                isLoading && <div className="loader"></div>
+            }
         </div>
     )
 
