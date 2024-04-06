@@ -172,6 +172,7 @@ const BillingAndDelivery: React.FC = () => {
             alert("Form submitted successfully!");
         } catch (e){
             console.error("submission error: ", e)
+            setSubmissionError("An error occurred.")
         } finally{
             setIsLoading(false);
         }
@@ -291,13 +292,11 @@ const BillingAndDelivery: React.FC = () => {
             </div>
             <div>
                 <button onClick={handleSubmit} type="button">Submit Order</button>
+                {isLoading && <div className="loader"></div>}
+                {submissionError && <div className="error-message">{submissionError}</div>}
             </div>
-            {
-                isLoading && <div className="loader"></div>
-            }
         </div>
     )
-
 }
 
 export default BillingAndDelivery;
