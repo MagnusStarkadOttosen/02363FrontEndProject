@@ -216,7 +216,20 @@ const BillingAndDelivery: React.FC = () => {
             <div className="row">
                 <div>
                     <label className="control-label" htmlFor="orderZip">Zip code</label>
-                    <input id="orderZip" className='form-control' type='text' name='orderZip' value={formState.orderZip} onChange={handleInputChange}></input>
+                    <input 
+                        id="orderZip" 
+                        className='form-control' 
+                        type='text' 
+                        name='orderZip' 
+                        value={formState.orderZip} 
+                        onChange={handleInputChange} 
+                        min="0" 
+                        step="1" 
+                        onKeyPress={(event) => { /*If it works it works*/
+                            if (!/[0-9]/.test(event.key)) {
+                                event.preventDefault();
+                            }
+                        }}></input>
                     {!zipValid && <div className="invalid-feedback">Invalid ZIP code for Denmark.</div>}
                 </div>
                 <div>
@@ -268,8 +281,21 @@ const BillingAndDelivery: React.FC = () => {
                     <div className="row">
                         <div>
                             <label className="control-label" htmlFor="billingZip">Billing Zip code</label>
-                            <input id="billingZip" className='form-control' type='text' name='billingZip' value={formState.billingZip} onChange={handleInputChange}></input>
-                            {!zipValid && <div className="invalid-feedback">Invalid ZIP code for Denmark.</div>}
+                            <input 
+                                id="billingZip" 
+                                className='form-control' 
+                                type='text' 
+                                name='billingZip' 
+                                value={formState.billingZip} 
+                                onChange={handleInputChange}
+                                min="0" 
+                                step="1" 
+                                onKeyPress={(event) => { /*If it works it works*/
+                                    if (!/[0-9]/.test(event.key)) {
+                                        event.preventDefault();
+                                    }
+                                }}></input>
+                            {!zipBillingValid && <div className="invalid-feedback">Invalid ZIP code for Denmark.</div>}
                         </div>
                         <div>
                             <label className="control-label" htmlFor="billingCity">Billing City</label>
