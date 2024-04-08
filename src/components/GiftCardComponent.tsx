@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "./AppContext";
 
 interface GiftCardPaymentProps {
   formState: {
@@ -22,7 +24,7 @@ const GiftCardPayment: React.FC<GiftCardPaymentProps> = ({
   const remainingAmount = totalAmount - giftCardAmount;
   return (
     <div>
-      {formState.paymentMethod === "Giftcard" && (
+      {formState.paymentMethod === "GiftCard" && (
         <div>
           <div className="row">
             <div>

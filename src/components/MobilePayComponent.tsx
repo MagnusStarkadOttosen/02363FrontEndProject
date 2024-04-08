@@ -25,6 +25,7 @@ const MobilePayPayment:React.FC<MobilePayPaymentProps> = ({
               type="text"
               name="mobilePayNumber"
               value={formState.mobilePayNumber}
+              placeholder="********"
               onChange={handleInputChange}
               maxLength={8}
             />

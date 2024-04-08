@@ -8,6 +8,7 @@ import MobilePayPayment from "./MobilePayComponent";
 const PaymentMethod: React.FC=() => {
   const [formState, setFormState] = useState({
     paymentMethod: "",
+    secondaryPaymentMethod: "",
     mobilePayNumber: "",
     giftCardpincode: "",
     giftCardAmount: "",
@@ -42,6 +43,10 @@ const PaymentMethod: React.FC=() => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+    setFormState((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
 
     let formattedValue = value;
     if (name === "creditcardNumber" || name === "giftCardNumber") {
@@ -137,9 +142,10 @@ const PaymentMethod: React.FC=() => {
     const amount = parseFloat(value)||0;
     setFormState((prevState) => ({
       ...prevState,
-      giftCardAmount: amount.toString(),
-      secondaryPaymentMethod: amount > totalAmount ? "CreditCard" : "",
+      giftCardAmount: amount.toFixed(2),
     }));
+
+
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -194,6 +200,7 @@ const PaymentMethod: React.FC=() => {
           </label>
         </div>
         {formState.paymentMethod === "GiftCard" && (
+          
           <GiftCardPayment
             formState={formState}
             handleInputChange={handleInputChange}
@@ -201,6 +208,7 @@ const PaymentMethod: React.FC=() => {
             totalAmount={totalAmount}
           />
         )}
+        console.log("GiftCardPayment");
         <div className="form-wrapper">
           <input
             type="radio"
