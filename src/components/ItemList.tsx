@@ -8,6 +8,8 @@ import image1 from "../assets/images/d3-vitamin.jpeg";
 import image2 from "../assets/images/c-vitamin-500.jpeg";
 import image3 from "../assets/images/c-vitamin-depot.jpeg";
 import image4 from "../assets/images/omega.jpeg";
+import { i } from "vitest/dist/reporters-MmQN-57K.js";
+
 
 /**
  * This is the hardcoded list of initial items.
@@ -180,8 +182,10 @@ const ItemList: React.FC = () => {
   
   //Maps each item to an itemComponent and display the total price.
   return (
-    <>
+    <div style={{width:"100vw", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
+  
       <h2>List Of Products</h2>
+      <div style={{display:"flex", alignItems:"center", justifyContent:"center", margin:"auto"}}>
       <tbody>
         <tr>
           <td>
@@ -211,9 +215,18 @@ const ItemList: React.FC = () => {
               </Table>
             </div>
           </td>
-          <td>
-            <div className="totalprice">
-              <h2> Total price </h2>
+        </tr>
+      </tbody>
+      <div className="totalprice" 
+        style={{display:"flex",
+                flexDirection:"column",
+                marginLeft: "100px", 
+                border:"2px gray double",
+                borderRadius:"10px",
+                height:"400px", 
+                width:"25%",
+                justifyContent:"center"}}>
+              <h2 style={{display:"flex", marginTop:"-250px", justifyContent:"center"}}> Total price </h2>
               <table>
                 <tbody>
                   <tr>
@@ -231,12 +244,15 @@ const ItemList: React.FC = () => {
                 </tbody>
               </table>
             </div>
-          </td>
-        </tr>
-      </tbody>
+    </div>
+    <div style={{display:"flex", justifyContent:"end", width:"100%", marginRight:"10px"}}>
       <button onClick={handleNext}>Next</button>
-    </>
+    </div>
+    </div>
   );
 };
 
 export default ItemList;
+
+
+  

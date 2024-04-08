@@ -1,5 +1,4 @@
 // AppRoutes.tsx
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ItemList from './ItemList';
 import BillingAndDelivery from './BillingAndDelivery';

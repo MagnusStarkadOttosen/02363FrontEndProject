@@ -17,7 +17,6 @@ export const AppContext = createContext<AppContextType | null>(null);
 export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [listItem, setListItem] = useState<Item[]>([]);
-    const [paymentMethod, setPaymentMethod] = useState('');
 
     const value = {
         totalAmount,
@@ -25,7 +24,7 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
         listItem,
         setListItems: setListItem,
         paymentMethod: '',
-        setPaymentMethod: () => {},
+        setPaymentMethod: (paymentMethod: string) => {},
     };
 
     return (

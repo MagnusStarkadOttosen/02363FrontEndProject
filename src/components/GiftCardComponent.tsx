@@ -20,8 +20,7 @@ const GiftCardPayment: React.FC<GiftCardPaymentProps> = ({
   handleGiftCardAmountChange,
   totalAmount,
 }) => {
-  const giftCardAmount = parseFloat(formState.giftCardAmount || '0');
-  const remainingAmount = totalAmount - giftCardAmount;
+  
   return (
     <div>
       {formState.paymentMethod === "GiftCard" && (
@@ -71,26 +70,30 @@ const GiftCardPayment: React.FC<GiftCardPaymentProps> = ({
                   value={formState.giftCardAmount}
                   onChange={(e) => handleGiftCardAmountChange(e.target.value)}
                 />
-                {remainingAmount > 0 && (
+                {totalAmount > parseFloat(formState.giftCardAmount) && (
                   <>
-                  <p>Remaining amount to pay: {remainingAmount.toFixed(2)}</p>
-                  <label htmlFor="useCreditCard">Use Credit Card:</label>
-                  <input
-                    type="radio"
-                    name="secondaryPaymentMethod"
-                    value="CreditCard"
-                    checked={formState.secondaryPaymentMethod === "CreditCard"}
-                    onChange={handleInputChange}
-                  />
-                  <label htmlFor="useMobilePay">Use MobilePay:</label>
-                  <input
-                    type="radio"
-                    name="secondaryPaymentMethod"
-                    value="MobilePay"
-                    checked={formState.secondaryPaymentMethod === "MobilePay"}
-                    onChange={handleInputChange}
-                  />
-                </>
+                    <label htmlFor="useCreditCard">Use Credit Card:</label>
+                    <input
+                      type="radio"
+                      id="useCreditCard"
+                      name="secondaryPaymentMethod"
+                      value="CreditCard"
+                      checked={
+                        formState.secondaryPaymentMethod === "CreditCard"
+                      }
+                      onChange={handleInputChange}
+                    />
+
+                    <label htmlFor="useMobilePay">Use MobilePay:</label>
+                    <input
+                      type="radio"
+                      id="useMobilePay"
+                      name="secondaryPaymentMethod"
+                      value="MobilePay"
+                      checked={formState.secondaryPaymentMethod === "MobilePay"}
+                      onChange={handleInputChange}
+                    />
+                  </>
                 )}
               </div>
             </div>

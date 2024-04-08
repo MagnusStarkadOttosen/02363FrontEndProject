@@ -131,7 +131,7 @@ const handleBack=()=> {
 
   return (
     <form>
-      <div>
+      <div style={{width:"100vw", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
         <h2>Billing and Delivery</h2>
 
         <div className="form-wrapper">
@@ -310,8 +310,10 @@ const handleBack=()=> {
           </div>
         </div>
       </div>
+      <div style={{display:"flex", justifyContent:"end", width:"100%", marginRight:"10px"}}>
       <button type="button"  onClick= {handleBack}>Back</button>
       <button type="button" onClick={handleNext}>Next</button>
+      </div>
     </form>
   );
 };
