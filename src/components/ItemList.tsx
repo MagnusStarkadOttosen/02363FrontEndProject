@@ -45,7 +45,7 @@ const ItemList: React.FC = () => {
 
         const fetchData = async () => {
             try {
-              const response = await fetch('https://raw.githubusercontent.com/larsthorup/checkout-data/main/product.json');
+              const response = await fetch('https://raw.githubusercontent.com/larsthorup/checkout-data/main/product-v2.json');
               if (!response.ok) {
                 throw new Error('Failed to fetch data');
               }
