@@ -39,7 +39,7 @@ const ItemComponent: React.FC<ItemProps> = ({
       <td>
         <div>
           <div>
-            <img src={item.imageSrc} alt="Image" width="60" height="60" />
+            <img src={item.imageUrl} alt="Image" width="60" height="60" />
           </div>
 
           {item.substituteItem ? (
