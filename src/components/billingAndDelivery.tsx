@@ -122,7 +122,7 @@ const BillingAndDelivery: React.FC=() => {
     validateVAT(formState.orderVAT, formState.orderCountry);
   }, [formState.orderCountry, formState.orderVAT]);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
 
         if(!isTermsAccepted){

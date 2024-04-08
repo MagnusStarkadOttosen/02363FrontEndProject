@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "./AppContext";
 import ItemComponent from "./ItemComponent";
+
 import { Item } from "../types/Items";
 import { Table } from "react-bootstrap";
 import image1 from "../assets/images/d3-vitamin.jpeg";
@@ -114,53 +115,84 @@ const ItemList: React.FC = () => {
     return newItem;
   };
   // function to handle the list of items
-  const handleItemList = (currentItemId: string) => {
-    let updatedItems = [...items];
-    const currentItemIndex = updatedItems.findIndex(
-      (item) => item.id === currentItemId
-    );
-    if (currentItemIndex > -1) {
-      const currentItem = updatedItems[currentItemIndex];
-      const newItemIndex = updatedItems.findIndex(
-        (item) =>
-          item.id === currentItem.substituteItem?.id &&
-          item.price === currentItem.substituteItem?.price
-      );
-      if (newItemIndex > -1) {
-        updatedItems[newItemIndex].amount =
-          updatedItems[currentItemIndex].amount + 1;
-        updatedItems.splice(newItemIndex, 1);
-      }
-    }
-    setItems(updatedItems);
-  };
+//   const handleItemList = (currentItemId: string) => {
+//     let updatedItems = [...items];
+//     const currentItemIndex = updatedItems.findIndex(
+//       (item) => item.id === currentItemId
+//     );
+//     if (currentItemIndex > -1) {
+//       const currentItem = updatedItems[currentItemIndex];
+//       const newItemIndex = updatedItems.findIndex(
+//         (item) =>
+//           item.id === currentItem.substituteItem?.id &&
+//           item.price === currentItem.substituteItem?.price
+//       );
+//       if (newItemIndex > -1) {
+//         updatedItems[newItemIndex].amount =
+//           updatedItems[currentItemIndex].amount + 1;
+//         updatedItems.splice(newItemIndex, 1);
+//       }
+//     }
+//     setItems(updatedItems);
+//   };
 
   items.forEach((item) => {
     handleSubstitute(item.id);
   });
 
-  //This calculates the initial subtotal for each item.
-  useEffect(() => {
-    const initialSubtotals = initItems.reduce((acc, item) => {
-      acc[item.id] = item.price;
-      return acc;
-    }, {} as { [key: string]: number });
-    setSubtotals(initialSubtotals);
-  }, []);
+    //This calculates the initial subtotal for each item.
+    useEffect(() => {
+        const initialSubtotals = items.reduce((acc, item) => {
+            acc[item.id] = item.price;
+            return acc;
+        }, {} as { [key: string]: number });
+        setSubtotals(initialSubtotals);
 
-  //Function to removes an item.
-  const removeItem = (id: string) => {
-    setItems(items.filter((item) => item.id !== id));
-    const newSubtotals = { ...subtotals };
-    delete newSubtotals[id];
-    setSubtotals(newSubtotals);
-  };
+        const fetchData = async () => {
+            try {
+              const response = await fetch('https://raw.githubusercontent.com/larsthorup/checkout-data/main/product-v2.json');
+              if (!response.ok) {
+                throw new Error('Failed to fetch data');
+              }
+              const data: Item[] = await response.json();
+              setItems(data);
+            //   setLoading(false);
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            //   setLoading(false);
+            }
+          };
+
+          fetchData();
+
+    }, []);
+
+     }
+//   //This calculates the initial subtotal for each item.
+//   useEffect(() => {
+//     const initialSubtotals = initItems.reduce((acc, item) => {
+//       acc[item.id] = item.price;
+//       return acc;
+//     }, {} as { [key: string]: number });
+//     setSubtotals(initialSubtotals);
+//   }, []);
+
+//   //Function to removes an item.
+//   const removeItem = (id: string) => {
+//     setItems(items.filter((item) => item.id !== id));
+//     const newSubtotals = { ...subtotals };
+//     delete newSubtotals[id];
+//     setSubtotals(newSubtotals);
+//   };
+
+
 
   //Function to handle changes in an items quantity.
   //This also updates the subtotal for the specified item.
   const handleQuantityChange = (id: string, subtotal: number) => {
     setSubtotals({ ...subtotals, [id]: subtotal });
   };
+
 
   //The total price for all items
   let total = Object.values(subtotals).reduce((acc, curr) => acc + curr, 0);
@@ -179,10 +211,9 @@ const ItemList: React.FC = () => {
 
   const handleNext = () => navigate("/billing");
 
-  
-  //Maps each item to an itemComponent and display the total price.
-  return (
-    <div style={{width:"100vw", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
+    //Maps each item to an itemComponent and display the total price.
+    return (
+         <div style={{width:"100vw", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
   
       <h2>List Of Products</h2>
       <div style={{display:"flex", alignItems:"center", justifyContent:"center", margin:"auto"}}>
@@ -202,6 +233,7 @@ const ItemList: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
+
                   {items.map((item) => (
                     <ItemComponent
                       key={item.id}
@@ -211,6 +243,7 @@ const ItemList: React.FC = () => {
                       handleSubstitute={() => handleSubstitute(item.id)}
                     />
                   ))}
+
                 </tbody>
               </Table>
             </div>
@@ -244,6 +277,7 @@ const ItemList: React.FC = () => {
                 </tbody>
               </table>
             </div>
+
     </div>
     <div style={{display:"flex", justifyContent:"end", width:"100%", marginRight:"10px"}}>
       <button onClick={handleNext}>Next</button>
