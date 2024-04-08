@@ -1,7 +1,7 @@
 import "./App.css";
 import ItemList from "./components/ItemList";
 import BillingAndDelivery from "./components/billingAndDelivery";
-import DisplayComponent from "./components/DisplayComponent";
+// import DisplayComponent from "./components/DisplayComponent";
 
 function App() {
   return (

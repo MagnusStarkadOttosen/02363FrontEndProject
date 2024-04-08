@@ -13,7 +13,7 @@ const ItemComponent: React.FC<ItemProps> = ({
   item,
   onRemove,
   onQuantityChange,
-  handleSubstitute,
+//   handleSubstitute,
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [gift, setGift] = useState(false);

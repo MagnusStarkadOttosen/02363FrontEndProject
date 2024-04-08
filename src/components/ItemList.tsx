@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import ItemComponent from "./ItemComponent";
 import { Item } from '../types/Items';
 import { Table } from 'react-bootstrap';
-import image1 from '../assets/images/d3-vitamin.jpeg';
-import image2 from '../assets/images/c-vitamin-500.jpeg';
-import image3 from '../assets/images/c-vitamin-depot.jpeg';
-import image4 from '../assets/images/omega.jpeg';
-import { i } from 'vitest/dist/reporters-MmQN-57K.js';
+// import image1 from '../assets/images/d3-vitamin.jpeg';
+// import image2 from '../assets/images/c-vitamin-500.jpeg';
+// import image3 from '../assets/images/c-vitamin-depot.jpeg';
+// import image4 from '../assets/images/omega.jpeg';
+// import { i } from 'vitest/dist/reporters-MmQN-57K.js';
 
 
 // /**
@@ -27,7 +27,7 @@ const ItemList: React.FC = () => {
     //Function to find a substitute for an item. 
 
     //Loading 
-    const [loading, setLoading] = useState<boolean>(true);
+    // const [loading, setLoading] = useState<boolean>(true);
 
    
     const findSubstitute = (currentItem: Item):Item|undefined => {
@@ -51,20 +51,20 @@ const ItemList: React.FC = () => {
 
     };
     // function to handle the list of items
-    const handleItemList =(currentItemId: string)=>{
-      let updatedItems=[...items];
-      const currentItemIndex = updatedItems.findIndex(item=>item.id===currentItemId);
-      if(currentItemIndex>-1){
-        const currentItem=updatedItems[currentItemIndex];
-        const newItemIndex = updatedItems.findIndex(item=>item.id===currentItem.substituteItem?.id&& item.price===currentItem.substituteItem?.price);
-        if(newItemIndex>-1){
-          updatedItems[newItemIndex].amount =updatedItems[currentItemIndex].amount+1;
-          updatedItems.splice(newItemIndex,1);
-        }
-    }
-     setItems(updatedItems);
+    // const handleItemList =(currentItemId: string)=>{
+    //   let updatedItems=[...items];
+    //   const currentItemIndex = updatedItems.findIndex(item=>item.id===currentItemId);
+    //   if(currentItemIndex>-1){
+    //     const currentItem=updatedItems[currentItemIndex];
+    //     const newItemIndex = updatedItems.findIndex(item=>item.id===currentItem.substituteItem?.id&& item.price===currentItem.substituteItem?.price);
+    //     if(newItemIndex>-1){
+    //       updatedItems[newItemIndex].amount =updatedItems[currentItemIndex].amount+1;
+    //       updatedItems.splice(newItemIndex,1);
+    //     }
+    // }
+    //  setItems(updatedItems);
     
-    }
+    // }
 
     items.forEach(item => {handleSubstitute(item.id)});
 
@@ -84,10 +84,10 @@ const ItemList: React.FC = () => {
               }
               const data: Item[] = await response.json();
               setItems(data);
-              setLoading(false);
+            //   setLoading(false);
             } catch (error) {
               console.error('Error fetching data:', error);
-              setLoading(false);
+            //   setLoading(false);
             }
           };
 
@@ -149,7 +149,7 @@ const ItemList: React.FC = () => {
                             item={item}
                             onRemove={removeItem}
                             onQuantityChange={handleQuantityChange}
-                            onFindSubstitute={() => handleSubstitute(item.id)}
+                            // onFindSubstitute={() => handleSubstitute(item.id)}
                             handleSubstitute={() => handleSubstitute(item.id)}
                                 
                         />
