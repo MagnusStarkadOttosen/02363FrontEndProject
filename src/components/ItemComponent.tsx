@@ -6,7 +6,9 @@ interface ItemProps {
   item: Item;
   onRemove: (id: string) => void;
   onQuantityChange: (id: string, quantity: number) => void;
+  // onFindSubstitute: (currentItem: Item) => Item | undefined;
   handleSubstitute: (itemId: string) => void;
+ 
 }
 
 const ItemComponent: React.FC<ItemProps> = ({
