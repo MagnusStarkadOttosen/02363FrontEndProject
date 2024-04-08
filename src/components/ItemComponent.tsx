@@ -49,7 +49,6 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onRemove, onQuantityChange, 
         <div>
             <img src={item.imageUrl} alt="Image" width="100" height="100" />
             <span> {item.name} </span>
-            <h1>{item.rebateQuantity}</h1>
             {substituteItemId && (
                 <div style={{ cursor: 'pointer', color: 'blue' }}>
                     Substitute offer: {substituteItemId}
