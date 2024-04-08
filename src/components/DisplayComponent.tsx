@@ -11,13 +11,13 @@ function DisplayComponent() {
     setStatus("Address");
   }
 
-  function goToPaymentMethod() {
-    setStatus("PaymentMethod");
-  }
+  // function goToPaymentMethod() {
+  //   setStatus("PaymentMethod");
+  // }
 
-  function goToOrderConfirmation() {
-    setStatus("OrderConfirmation");
-  }
+  // function goToOrderConfirmation() {
+  //   setStatus("OrderConfirmation");
+  // }
 
   function goToProductSelection() {
     setStatus("ProductSelection");
@@ -36,7 +36,6 @@ function DisplayComponent() {
         <div>
           <BillingAndDelivery />
           <button onClick={goToProductSelection}>Back</button>
-          <button onClick={goToPaymentMethod}>Next</button>
         </div>
       );
     case "PaymentMethod":
@@ -44,7 +43,7 @@ function DisplayComponent() {
         <div>
           <PaymentMethod totalAmount={0} />
           <button onClick={goToAddress}>Back</button>
-          <button onClick={goToOrderConfirmation}>Next</button>
+          {/* <button onClick={goToOrderConfirmation}>Next</button> */}
         </div>
       );
     case "OrderConfirmation":

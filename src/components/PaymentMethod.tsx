@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import ConfirmOrderView from "./ConfirmOrderView";
-import Total from "./Total";
-const PaymentMethod: React.FC<{ totalAmount: number }> = ({ totalAmount }) => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "./AppContext";
+import CreditCardPayment from "./CreditCardComponent";
+import GiftCardPayment from "./GiftCardComponent";
+import MobilePayPayment from "./MobilePayComponent";
+
+const PaymentMethod: React.FC=() => {
   const [formState, setFormState] = useState({
     paymentMethod: "",
     mobilePayNumber: "",
@@ -16,6 +18,16 @@ const PaymentMethod: React.FC<{ totalAmount: number }> = ({ totalAmount }) => {
     cvv: "",
     cardsHolderName: "",
   });
+  const navigate = useNavigate();
+  const context = useContext(AppContext);
+
+  if (!context) {
+    throw new Error(
+      "AppContext is null, make sure it is provided by a provider"
+    );
+  }
+
+  const { totalAmount } = context;
 
   const [isValid, setIsValid] = useState({
     mobilePayNumber: true,
@@ -121,6 +133,15 @@ const PaymentMethod: React.FC<{ totalAmount: number }> = ({ totalAmount }) => {
     }
   }, [formState]);
 
+  const handleGiftCardAmountChange = (value: string) => {
+    const amount = parseFloat(value)||0;
+    setFormState((prevState) => ({
+      ...prevState,
+      giftCardAmount: amount.toString(),
+      secondaryPaymentMethod: amount > totalAmount ? "CreditCard" : "",
+    }));
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const allValid = Object.values(isValid).every((value) => value);
@@ -144,87 +165,42 @@ const PaymentMethod: React.FC<{ totalAmount: number }> = ({ totalAmount }) => {
     }
     if (allValid && paymentMethodValid && additionalChecksPassed) {
       console.log("Form is valid");
-      setIsSubmitted(true);
+      context.setPaymentMethod(formState.paymentMethod);
+      navigate("/confirm");
     } else {
       console.log("Form is not invalid, please check the fields");
     }
   };
-  if (isSubmitted) {
-    return <ConfirmOrderView />;
-  }
-
+  const handleBack = () => {
+    navigate("/billing");
+  };
   return (
     <form onSubmit={handleSubmit}>
+      
       <div className="payment-method-form">
         <h2> Payment options</h2>
+
         <div className="form-wrapper">
-          <div>
-            <input
-              type="radio"
-              id="Giftcard"
-              name="paymentMethod"
-              value="Giftcard"
-              checked={formState.paymentMethod === "Giftcard"}
-              onChange={handleInputChange}
-            />
-            <label className="control-label" htmlFor="">
-              Giftcard{" "}
-            </label>
-          </div>
-          {formState.paymentMethod === "Giftcard" && (
-            <div>
-              <div className="row">
-                <div>
-                  <label className="label" htmlFor="c">
-                    Giftcard number
-                  </label>
-                  <input
-                    id="giftCardNumber"
-                    className="form-control"
-                    type="text"
-                    name="giftCardNumber"
-                    placeholder="**** **** **** ****"
-                    value={formState.giftCardNumber}
-                    onChange={handleInputChange}
-                    pattern="\d{4} \d{4} \d{4} \d{4}"
-                    maxLength={19}
-                  />
-                </div>
-                <div>
-                  <label className="label" htmlFor="c">
-                    Pincode
-                  </label>
-                  <input
-                    id="giftCardpincode"
-                    className="form-control"
-                    type="text"
-                    name="giftCardpincode"
-                    placeholder="****"
-                    value={formState.giftCardpincode}
-                    onChange={handleInputChange}
-                    maxLength={4}
-                  />
-                </div>
-                <div className="row">
-                  <div>
-                    <label className="label" htmlFor="giftCardAmount">
-                      Amount
-                    </label>
-                    <input
-                      id="giftCardAmount"
-                      className="form-control"
-                      type="text"
-                      name="giftCardAmount"
-                      value={formState.giftCardpincode}
-                      onChange={handleInputChange}
-                      maxLength={4}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          <input
+            type="radio"
+            id="GiftCard"
+            name="paymentMethod"
+            value="GiftCard"
+            checked={formState.paymentMethod === "GiftCard"}
+            onChange={handleInputChange}
+          />
+          <label className="control-label" htmlFor="GiftCard">
+            Gift Card
+          </label>
         </div>
+        {formState.paymentMethod === "GiftCard" && (
+          <GiftCardPayment
+            formState={formState}
+            handleInputChange={handleInputChange}
+            handleGiftCardAmountChange={handleGiftCardAmountChange}
+            totalAmount={totalAmount}
+          />
+        )}
         <div className="form-wrapper">
           <input
             type="radio"
@@ -239,114 +215,34 @@ const PaymentMethod: React.FC<{ totalAmount: number }> = ({ totalAmount }) => {
           </label>
         </div>
         {formState.paymentMethod === "CreditCard" && (
-          <div>
-            <div className="row">
-              <div>
-                <label className="label" htmlFor="creditcardNumber">
-                  Card number
-                </label>
-                <input
-                  id="creditcardNumber"
-                  className="form-control"
-                  type="text"
-                  name="creditcardNumber"
-                  placeholder="**** **** **** ****"
-                  value={formState.creditcardNumber}
-                  onChange={handleInputChange}
-                  pattern="\d{4} \d{4} \d{4} \d{4}"
-                  maxLength={19}
-                />
-              </div>
-            </div>
-
-            <div className="row">
-              <div>
-                <label className="label" htmlFor="expirationDate">
-                  Expiry date
-                </label>
-                <input
-                  id="expirationDate"
-                  className="form-control"
-                  type="text"
-                  name="expirationDate"
-                  placeholder="MM/YY"
-                  value={formState.expirationDate}
-                  pattern="\d{2} \d{2}"
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label className="label" htmlFor="cvv">
-                  CVC / CVV
-                </label>
-                <input
-                  id="cvv"
-                  className="form-control"
-                  type="text"
-                  name="cvv"
-                  placeholder="***"
-                  value={formState.cvv}
-                  onChange={handleInputChange}
-                  maxLength={3}
-                />
-              </div>
-            </div>
-
-            <div className="row">
-              <div>
-                <label className="label" htmlFor="cardsHolderName">
-                  Name on card
-                </label>
-                <input
-                  id="cardsHolderName"
-                  className="form-control"
-                  type="text"
-                  name="cardsHolderName"
-                  value={formState.cardsHolderName}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-          </div>
+          <CreditCardPayment
+            formState={formState}
+            handleInputChange={handleInputChange}
+          />
         )}
-      </div>
-      <div className="form-wrapper">
-        <div>
+
+        <div className="form-wrapper">
           <input
             type="radio"
-            id="Mobilepay"
+            id="MobilePay"
             name="paymentMethod"
-            value="Mobilepay"
-            checked={formState.paymentMethod === "Mobilepay"}
+            value="MobilePay"
+            checked={formState.paymentMethod === "MobilePay"}
             onChange={handleInputChange}
           />
-          <label className="control-label" htmlFor="Mobilepay">
-            {" "}
-            Mobilepay
+          <label className="control-label" htmlFor="MobilePay">
+            MobilePay
           </label>
         </div>
-        {formState.paymentMethod === "Mobilepay" && (
-          <div className="row">
-            <div>
-              <label className="label" htmlFor="c">
-                Mobilepay number
-              </label>
-              <input
-                id="mobilePayNumber"
-                className="form-control"
-                type="text"
-                name="mobilePayNumber"
-                value={formState.mobilePayNumber}
-                onChange={handleInputChange}
-                maxLength={8}
-              />
-            </div>
-          </div>
+        {formState.paymentMethod === "MobilePay" && (
+          <MobilePayPayment
+            formState={formState}
+            handleInputChange={handleInputChange}
+          />
         )}
+       <button type="button" onClick={handleBack}>Back</button>
+        <button type="submit">Pay</button>
       </div>
-
-      {/* <Total totalAmount={totalAmount} /> */}
-      <button type="submit">Pay</button>
     </form>
   );
 };

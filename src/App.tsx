@@ -1,11 +1,15 @@
-import "./App.css";
-import ItemList from "./components/ItemList";
-import BillingAndDelivery from "./components/BillingAndDelivery";
-import DisplayComponent from "./components/DisplayComponent";
+import React from 'react';
+import { AppProvider } from './components/AppContext';
+import AppRoutes from './components/AppRoutes';
 
 function App() {
+  
+
   return (
-    <DisplayComponent />
+    <AppProvider>
+     <AppRoutes/>
+    </AppProvider>
+    // <DisplayComponent />
 
     // <div className="row">
 
