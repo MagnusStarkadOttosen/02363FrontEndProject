@@ -11,4 +11,5 @@ export interface Item{
     rebatePercent: number;
     upsellProductId: string
     imageUrl: string;
+    substituteItem: Item | null;
 }

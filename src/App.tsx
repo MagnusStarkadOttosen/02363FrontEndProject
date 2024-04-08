@@ -1,10 +1,11 @@
-import './App.css'
-import ItemList from './components/ItemList';
-import BillingAndDelivery from './components/billingAndDelivery';
+import "./App.css";
+import ItemList from "./components/ItemList";
+import BillingAndDelivery from "./components/billingAndDelivery";
+import DisplayComponent from "./components/DisplayComponent";
 
 function App() {
-
   return (
+    //<DisplayComponent />
 
     <div className="row">
 
@@ -28,4 +29,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

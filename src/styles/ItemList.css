@@ -1,13 +1,43 @@
 .table{
-    width: 100%;
-    height: 100%;
-    font-weight: 500;
-    
+  width: 100%;
+  height: 100%;
+  font-weight: 500;
+  margin-bottom: 15px;
   
-  }
-  thead {
-    font-size: 1.5em;
-    font-weight: bold;
-    text-align:center;
-  
-  }
+
+}
+thead {
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align:center;
+
+}
+.product_area{
+  margin-bottom: 5rem;
+  margin-right: 3.5rem;
+  display: block;
+  grid-area: main;
+}
+/* Adds a background for TotalPrice form */
+.totalprice{
+  background-color: #f0f0f0;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  grid-area: aside;
+  display: flex;
+}
+.a{
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align:center;
+}
+.b{
+  font-size: 1.5em;
+
+}
+.h2{
+  font-size: 1.5em;
+  font-weight: bold; 
+  text-align:center;
+}
