@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ItemList from "./ItemList";
-import BillingAndDelivery from "./BillingAndDelivery";
+import BillingAndDelivery from "./billingAndDelivery";
 import PaymentMethod from "./PaymentMethod";
 import ConfirmOrderView from "./ConfirmOrderView";
 

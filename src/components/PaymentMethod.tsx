@@ -55,7 +55,7 @@ const PaymentMethod: React.FC = () => {
     } else if (name === "expirationDate") {
       const onlyNums = value.replace(/\D/g, "");
       formattedValue = onlyNums
-        .replace(/^(0[1-9]|1[0-2])?(\d{2})?/, (match, p1, p2) => {
+        .replace(/^(0[1-9]|1[0-2])?(\d{2})?/, (_match, p1, p2) => {
           if (p2) {
             return `${p1}/${p2}`;
           } else {

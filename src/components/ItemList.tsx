@@ -4,74 +4,10 @@ import { AppContext } from "./AppContext";
 import ItemComponent from "./ItemComponent";
 import { Item } from "../types/Items";
 import { Table } from "react-bootstrap";
-import image1 from "../assets/images/d3-vitamin.jpeg";
-import image2 from "../assets/images/c-vitamin-500.jpeg";
-import image3 from "../assets/images/c-vitamin-depot.jpeg";
-import image4 from "../assets/images/omega.jpeg";
-import { i } from "vitest/dist/reporters-MmQN-57K.js";
-
-
-/**
- * This is the hardcoded list of initial items.
- */
-const initItems: Item[] = [
-  {
-    id: "vitamin-d-90-100",
-    name: "D-vitamin, 90ug, 100 stk",
-    type: "D-vitamin",
-    offer: "",
-    substituteItem: null,
-    imageSrc: image1,
-    price: 116,
-    amount: 0,
-    rebateQuantity: 3,
-    rebatePercent: 10,
-    gift: false,
-  },
-  {
-    id: "vitamin-c-500-250",
-    name: "C-vitamin, 500mg, 240 stk",
-    type: "C-vitamin",
-    offer: "",
-    substituteItem: null,
-    imageSrc: image2,
-    amount: 0,
-    rebateQuantity: 3,
-    rebatePercent: 10,
-    price: 150,
-    gift: false,
-  },
-  {
-    id: "vitamin-c-depot-500-250",
-    name: "C-vitamin Depot, 500mg, 240 stk",
-    type: "C-vitamin",
-    offer: "",
-    substituteItem: null,
-    imageSrc: image3,
-    amount: 0,
-    rebateQuantity: 3,
-    rebatePercent: 10,
-    price: 175,
-    gift: false,
-  },
-  {
-    id: "fish-oil-1000-120",
-    name: "Omega 3 fiskeolie, 1000mg, 120 stk",
-    type: "Omega",
-    offer: "",
-    substituteItem: null,
-    imageSrc: image4,
-    amount: 0,
-    rebateQuantity: 3,
-    rebatePercent: 10,
-    price: 69,
-    gift: false,
-  },
-];
 
 const ItemList: React.FC = () => {
   //Hook for the list of items.
-  const [items, setItems] = useState<Item[]>(initItems);
+  const [items, setItems] = useState<Item[]>([]);
   //Hook for tracking the subtotal for each item based on its quantity.
   const [subtotals, setSubtotals] = useState<{ [key: string]: number }>({});
   //Hook for the total price of all items.
@@ -83,15 +19,15 @@ const ItemList: React.FC = () => {
   }
 
   const { setTotalAmount } = context;
-    const { setListItems } = context;
-  
+  const { setListItems } = context;
+
   useEffect(() => {
     const total = items.reduce(
       (acc, item) => acc + item.price * item.amount,
       0
     );
     setTotalAmount(total);
-    setListItems(items.filter(item=>item.amount>0));
+    setListItems(items.filter(item => item.amount > 0));
   }, [items, setTotalAmount]);
 
   const findSubstitute = (currentItem: Item): Item | undefined => {
@@ -135,17 +71,36 @@ const ItemList: React.FC = () => {
     setItems(updatedItems);
   };
 
+
   items.forEach((item) => {
     handleSubstitute(item.id);
   });
 
   //This calculates the initial subtotal for each item.
   useEffect(() => {
-    const initialSubtotals = initItems.reduce((acc, item) => {
+    const initialSubtotals = items.reduce((acc, item) => {
       acc[item.id] = item.price;
       return acc;
     }, {} as { [key: string]: number });
     setSubtotals(initialSubtotals);
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://raw.githubusercontent.com/larsthorup/checkout-data/main/product-v2.json');
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const data: Item[] = await response.json();
+        setItems(data);
+        //   setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        //   setLoading(false);
+      }
+    };
+
+    fetchData();
+
   }, []);
 
   //Function to removes an item.
@@ -179,80 +134,84 @@ const ItemList: React.FC = () => {
 
   const handleNext = () => navigate("/billing");
 
-  
+
   //Maps each item to an itemComponent and display the total price.
   return (
-    <div style={{width:"100vw", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
-  
+    <div style={{ width: "100vw", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+
       <h2>List Of Products</h2>
-      <div style={{display:"flex", alignItems:"center", justifyContent:"center", margin:"auto"}}>
-      <tbody>
-        <tr>
-          <td>
-            <div className="product_area">
-              <Table>
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th></th>
-                    <th></th>
-                    <th>Quantity</th>
-                    <th>Subtotal</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map((item) => (
-                    <ItemComponent
-                      key={item.id}
-                      item={item}
-                      onRemove={removeItem}
-                      onQuantityChange={handleQuantityChange}
-                      handleSubstitute={() => handleSubstitute(item.id)}
-                    />
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-      <div className="totalprice" 
-        style={{display:"flex",
-                flexDirection:"column",
-                marginLeft: "100px", 
-                border:"2px gray double",
-                borderRadius:"10px",
-                height:"400px", 
-                width:"25%",
-                justifyContent:"center"}}>
-              <h2 style={{display:"flex", marginTop:"-250px", justifyContent:"center"}}> Total price </h2>
-              <table>
-                <tbody>
-                  <tr>
-                    <td className="a"> {items.length} products: </td>
-                    <td className="b"> ${total.toFixed(2)} </td>
-                  </tr>
-                  <tr>
-                    <td className="a">Total discount:</td>
-                    <td className="b"> ${discount.toFixed(2)}</td>
-                  </tr>
-                  <tr>
-                    <td className="a">Total: </td>
-                    <td className="b"> ${totalAmount.toFixed(2)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-    </div>
-    <div style={{display:"flex", justifyContent:"end", width:"100%", marginRight:"10px"}}>
-      <button onClick={handleNext}>Next</button>
-    </div>
-    </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", margin: "auto" }}>
+        <tbody>
+          <tr>
+            <td>
+              <div className="product_area">
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th></th>
+                      <th></th>
+                      <th>Quantity</th>
+                      <th>Subtotal</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      items.map((item) => (
+                        <ItemComponent
+                          key={item.id}
+                          item={item}
+                          onRemove={removeItem}
+                          onQuantityChange={handleQuantityChange}
+                          handleSubstitute={() => handleSubstitute(item.id)}
+                        />
+                      ))
+                    }
+                  </tbody >
+                </Table >
+              </div >
+            </td >
+          </tr >
+        </tbody >
+        <div className="totalprice"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            marginLeft: "100px",
+            border: "2px gray double",
+            borderRadius: "10px",
+            height: "400px",
+            width: "25%",
+            justifyContent: "center"
+          }}>
+          <h2 style={{ display: "flex", marginTop: "-250px", justifyContent: "center" }}> Total price </h2>
+          <table>
+            <tbody>
+              <tr>
+                <td className="a"> {items.length} products: </td>
+                <td className="b"> ${total.toFixed(2)} </td>
+              </tr>
+              <tr>
+                <td className="a">Total discount:</td>
+                <td className="b"> ${discount.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td className="a">Total: </td>
+                <td className="b"> ${totalAmount.toFixed(2)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div >
+      <div style={{ display: "flex", justifyContent: "end", width: "100%", marginRight: "10px" }}>
+        <button onClick={handleNext}>Next</button>
+      </div>
+    </div >
   );
 };
 
 export default ItemList;
 
 
-  
+
