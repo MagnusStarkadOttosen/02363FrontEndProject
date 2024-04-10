@@ -2,29 +2,33 @@ import React, { useState, useEffect } from 'react';
 import ItemComponent from "./ItemComponent";
 import { Item } from '../types/Items';
 import { Table } from 'react-bootstrap';
-import image1 from '../assets/images/d3-vitamin.jpeg';
-import image2 from '../assets/images/c-vitamin-500.jpeg';
-import image3 from '../assets/images/c-vitamin-depot.jpeg';
-import image4 from '../assets/images/omega.jpeg';
-import { i } from 'vitest/dist/reporters-MmQN-57K.js';
+// import image1 from '../assets/images/d3-vitamin.jpeg';
+// import image2 from '../assets/images/c-vitamin-500.jpeg';
+// import image3 from '../assets/images/c-vitamin-depot.jpeg';
+// import image4 from '../assets/images/omega.jpeg';
+// import { i } from 'vitest/dist/reporters-MmQN-57K.js';
 
 
-/**
- * This is the hardcoded list of initial items.
- */
-const initItems: Item[] = [
-    { id: "vitamin-d-90-100", name: "D-vitamin, 90ug, 100 stk", type: "D-vitamin",offer:"",substituteItem:null, imageSrc: image1, price: 116, amount: 0, rebateQuantity: 3, rebatePercent: 10, gift: false },
-    { id: "vitamin-c-500-250", name: "C-vitamin, 500mg, 240 stk", type: "C-vitamin",offer:"",substituteItem:null, imageSrc: image2, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 150, gift: false },
-    { id: "vitamin-c-depot-500-250", name: "C-vitamin Depot, 500mg, 240 stk", type: "C-vitamin",offer:"",substituteItem:null, imageSrc: image3, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: false },
-    { id: "fish-oil-1000-120", name: "Omega 3 fiskeolie, 1000mg, 120 stk", type: "Omega",offer:"",substituteItem:null, imageSrc: image4, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 69, gift: false },
-];
+// /**
+//  * This is the hardcoded list of initial items.
+//  */
+// const initItems: Item[] = [
+//     { id: "vitamin-d-90-100", name: "D-vitamin, 90ug, 100 stk", type: "D-vitamin",offer:"",substituteItem:null, imageSrc: image1, price: 116, amount: 0, rebateQuantity: 3, rebatePercent: 10, gift: false },
+//     { id: "vitamin-c-500-250", name: "C-vitamin, 500mg, 240 stk", type: "C-vitamin",offer:"",substituteItem:null, imageSrc: image2, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 150, gift: false },
+//     { id: "vitamin-c-depot-500-250", name: "C-vitamin Depot, 500mg, 240 stk", type: "C-vitamin",offer:"",substituteItem:null, imageSrc: image3, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 175, gift: false },
+//     { id: "fish-oil-1000-120", name: "Omega 3 fiskeolie, 1000mg, 120 stk", type: "Omega",offer:"",substituteItem:null, imageSrc: image4, amount: 0, rebateQuantity: 3, rebatePercent: 10, price: 69, gift: false },
+// ];
 
 const ItemList: React.FC = () => {
     //Hook for the list of items.
-    const [items, setItems] = useState<Item[]>(initItems);
+    const [items, setItems] = useState<Item[]>([]);
     //Hook for tracking the subtotal for each item based on its quantity.
     const [subtotals, setSubtotals] = useState<{ [key: string]: number }>({});
     //Function to find a substitute for an item. 
+
+    //Loading 
+    // const [loading, setLoading] = useState<boolean>(true);
+
    
     const findSubstitute = (currentItem: Item):Item|undefined => {
     //Filters the items to find the ones with the same type and a higher price.
@@ -47,30 +51,48 @@ const ItemList: React.FC = () => {
 
     };
     // function to handle the list of items
-    const handleItemList =(currentItemId: string)=>{
-      let updatedItems=[...items];
-      const currentItemIndex = updatedItems.findIndex(item=>item.id===currentItemId);
-      if(currentItemIndex>-1){
-        const currentItem=updatedItems[currentItemIndex];
-        const newItemIndex = updatedItems.findIndex(item=>item.id===currentItem.substituteItem?.id&& item.price===currentItem.substituteItem?.price);
-        if(newItemIndex>-1){
-          updatedItems[newItemIndex].amount =updatedItems[currentItemIndex].amount+1;
-          updatedItems.splice(newItemIndex,1);
-        }
-    }
-     setItems(updatedItems);
+    // const handleItemList =(currentItemId: string)=>{
+    //   let updatedItems=[...items];
+    //   const currentItemIndex = updatedItems.findIndex(item=>item.id===currentItemId);
+    //   if(currentItemIndex>-1){
+    //     const currentItem=updatedItems[currentItemIndex];
+    //     const newItemIndex = updatedItems.findIndex(item=>item.id===currentItem.substituteItem?.id&& item.price===currentItem.substituteItem?.price);
+    //     if(newItemIndex>-1){
+    //       updatedItems[newItemIndex].amount =updatedItems[currentItemIndex].amount+1;
+    //       updatedItems.splice(newItemIndex,1);
+    //     }
+    // }
+    //  setItems(updatedItems);
     
-    }
+    // }
 
     items.forEach(item => {handleSubstitute(item.id)});
 
     //This calculates the initial subtotal for each item.
     useEffect(() => {
-        const initialSubtotals = initItems.reduce((acc, item) => {
+        const initialSubtotals = items.reduce((acc, item) => {
             acc[item.id] = item.price;
             return acc;
         }, {} as { [key: string]: number });
         setSubtotals(initialSubtotals);
+
+        const fetchData = async () => {
+            try {
+              const response = await fetch('https://raw.githubusercontent.com/larsthorup/checkout-data/main/product-v2.json');
+              if (!response.ok) {
+                throw new Error('Failed to fetch data');
+              }
+              const data: Item[] = await response.json();
+              setItems(data);
+            //   setLoading(false);
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            //   setLoading(false);
+            }
+          };
+
+          fetchData();
+
     }, []);
 
     //Function to removes an item.
@@ -100,6 +122,7 @@ const ItemList: React.FC = () => {
     console.log(total);
 
 
+
     //Maps each item to an itemComponent and display the total price.
     return (
         <> 
@@ -126,7 +149,7 @@ const ItemList: React.FC = () => {
                             item={item}
                             onRemove={removeItem}
                             onQuantityChange={handleQuantityChange}
-                            onFindSubstitute={() => handleSubstitute(item.id)}
+                            // onFindSubstitute={() => handleSubstitute(item.id)}
                             handleSubstitute={() => handleSubstitute(item.id)}
                                 
                         />
@@ -159,6 +182,8 @@ const ItemList: React.FC = () => {
             </tr>
             </tbody>
         </>
+
+        
     )
 }
 

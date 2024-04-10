@@ -13,7 +13,7 @@ const ItemComponent: React.FC<ItemProps> = ({
   item,
   onRemove,
   onQuantityChange,
-  handleSubstitute,
+//   handleSubstitute,
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [gift, setGift] = useState(false);
@@ -39,10 +39,10 @@ const ItemComponent: React.FC<ItemProps> = ({
       <td>
         <div>
           <div>
-            <img src={item.imageSrc} alt="Image" width="60" height="60" />
+            <img src={item.imageUrl} alt="Image" width="100" height="100" />
           </div>
-
-          {item.substituteItem ? (
+        
+          {/*item.substituteItem ? (
             <div
               onClick={() => handleSubstitute(item.id)}
               style={{ cursor: "pointer", color: "blue" }}
@@ -51,7 +51,8 @@ const ItemComponent: React.FC<ItemProps> = ({
             </div>
           ) : (
             <div></div>
-          )}
+          )*/}
+   
         </div>
       </td>
       <td>

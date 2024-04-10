@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import ConfirmOrderView from "./ConfirmOrderView";
-import Total from "./Total";
-const PaymentMethod: React.FC<{ totalAmount: number }> = ({ totalAmount }) => {
+// import Total from "./Total";
+const PaymentMethod: React.FC<{ totalAmount: number }> = ({ }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formState, setFormState] = useState({
     paymentMethod: "",
@@ -38,7 +38,7 @@ const PaymentMethod: React.FC<{ totalAmount: number }> = ({ totalAmount }) => {
     } else if (name === "expirationDate") {
       const onlyNums = value.replace(/\D/g, "");
       formattedValue = onlyNums
-        .replace(/^(0[1-9]|1[0-2])?(\d{2})?/, (match, p1, p2) => {
+        .replace(/^(0[1-9]|1[0-2])?(\d{2})?/, (_match, p1, p2) => {
           if (p2) {
             return `${p1}/${p2}`;
           } else {
