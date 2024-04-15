@@ -83,18 +83,26 @@ const BillingAndDelivery: React.FC = () => {
 
     //Validation of Zip code only if country is denmark
     const [zipBillingValid, setBillingZipValid] = useState(true); //For zip validation
+    interface Zipdata {
+        navn: string;
+    }
     const validateBillingZip = async (zip: string, country: string) => {
         if (country === "DK") {
             try {
                 const response = await fetch(`https://api.dataforsyningen.dk/postnumre/${zip}`);
                 if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
-                    setBillingZipValid(true);
-                    setFormState(prevState => ({ //This changes city. This is bad practice, you shouldn't change a controlled input like this.
-                        ...prevState,
-                        billingCity: data.navn,
-                    }));
+                    const data: Zipdata = await response.json();
+                    if ("navn" in data) {
+                        console.log(data);
+                        setBillingZipValid(true);
+                        setFormState(prevState => ({ //This changes city. This is bad practice, you shouldn't change a controlled input like this.
+                            ...prevState,
+                            billingCity: data.navn,
+                        }));
+                    } else {
+                        console.error("Data is missing navn");
+                        setBillingZipValid(false);
+                    }
                 } else {
                     setBillingZipValid(false);
                 }
