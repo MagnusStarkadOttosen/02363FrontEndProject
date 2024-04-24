@@ -156,17 +156,23 @@ const ItemList: React.FC = () => {
     setSubtotals(newSubtotals);
   };
 
+let totalProducts = 0;
+let discount = 0;
+let totalAmount = 0;
+let total = 0;
   //Function to handle changes in an items quantity.
   //This also updates the subtotal for the specified item.
   const handleQuantityChange = (id: string, subtotal: number) => {
     setSubtotals({ ...subtotals, [id]: subtotal });
-  };
-
+    totalProducts =0;
+  items.forEach((item) => {
+    totalProducts += item.amount;
+  });
   //The total price for all items
-  let total = Object.values(subtotals).reduce((acc, curr) => acc + curr, 0);
+  total = Object.values(subtotals).reduce((acc, curr) => acc + curr, 0);
   console.log(total);
-  let discount = 0;
-  let totalAmount = 0;
+   discount = 0;
+   totalAmount = 0;
   if (total > 300) {
     discount = total;
     totalAmount = total * 0.9;
@@ -176,6 +182,13 @@ const ItemList: React.FC = () => {
   }
   console.log(total);
 
+  };
+
+  
+
+
+
+ 
 
   const handleNext = () => navigate("/billing");
 
@@ -230,7 +243,7 @@ const ItemList: React.FC = () => {
               <table>
                 <tbody>
                   <tr>
-                    <td className="a"> {items.length} products: </td>
+                    <td className="a"> {totalProducts} products: </td>
                     <td className="b"> ${total.toFixed(2)} </td>
                   </tr>
                   <tr>

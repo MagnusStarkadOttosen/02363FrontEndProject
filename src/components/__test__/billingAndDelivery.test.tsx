@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import BillingAndDelivery from "../BillingAndDelivery";
+import BillingAndDelivery from "../billingAndDelivery";
 
 describe("billingAndDelivery Phone Validation", () => {
   it("Checks if there is no error for 8 digits", async () => {

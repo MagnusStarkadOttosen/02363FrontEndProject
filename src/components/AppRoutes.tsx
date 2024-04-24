@@ -1,7 +1,7 @@
 // AppRoutes.tsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ItemList from './ItemList';
-import BillingAndDelivery from './BillingAndDelivery';
+import BillingAndDelivery from './billingAndDelivery';
 import PaymentMethod from './PaymentMethod';
 import ConfirmOrderView from './ConfirmOrderView';
 
