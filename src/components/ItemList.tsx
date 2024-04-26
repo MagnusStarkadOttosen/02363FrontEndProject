@@ -10,7 +10,6 @@ import image3 from "../assets/images/c-vitamin-depot.jpeg";
 import image4 from "../assets/images/omega.jpeg";
 import { i } from "vitest/dist/reporters-MmQN-57K.js";
 
-
 /**
  * This is the hardcoded list of initial items.
  */
@@ -83,15 +82,15 @@ const ItemList: React.FC = () => {
   }
 
   const { setTotalAmount } = context;
-    const { setListItems } = context;
-  
+  const { setListItems } = context;
+
   useEffect(() => {
     const total = items.reduce(
       (acc, item) => acc + item.price * item.amount,
       0
     );
     setTotalAmount(total);
-    setListItems(items.filter(item=>item.amount>0));
+    setListItems(items.filter((item) => item.amount > 0));
   }, [items, setTotalAmount]);
 
   const findSubstitute = (currentItem: Item): Item | undefined => {
@@ -156,116 +155,139 @@ const ItemList: React.FC = () => {
     setSubtotals(newSubtotals);
   };
 
-let totalProducts = 0;
-let discount = 0;
-let totalAmount = 0;
-let total = 0;
+  let totalProducts = 0;
+  let discount = 0;
+  let totalAmount = 0;
+  let total = 0;
   //Function to handle changes in an items quantity.
   //This also updates the subtotal for the specified item.
   const handleQuantityChange = (id: string, subtotal: number) => {
     setSubtotals({ ...subtotals, [id]: subtotal });
-    totalProducts =0;
-  items.forEach((item) => {
-    totalProducts += item.amount;
-  });
-  //The total price for all items
-  total = Object.values(subtotals).reduce((acc, curr) => acc + curr, 0);
-  console.log(total);
-   discount = 0;
-   totalAmount = 0;
-  if (total > 300) {
-    discount = total;
-    totalAmount = total * 0.9;
-    discount = discount - totalAmount;
-  } else {
-    totalAmount = total;
-  }
-  console.log(total);
-
+    totalProducts = 0;
+    items.forEach((item) => {
+      totalProducts += item.amount;
+    });
+    //The total price for all items
+    total = Object.values(subtotals).reduce((acc, curr) => acc + curr, 0);
+    console.log(total);
+    discount = 0;
+    totalAmount = 0;
+    if (total > 300) {
+      discount = total;
+      totalAmount = total * 0.9;
+      discount = discount - totalAmount;
+    } else {
+      totalAmount = total;
+    }
+    console.log(total);
   };
-
-  
-
-
-
- 
 
   const handleNext = () => navigate("/billing");
 
-  
   //Maps each item to an itemComponent and display the total price.
   return (
-    <div style={{width:"100vw", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
-  
+    <div
+      style={{
+        width: "100vw",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <h2>List Of Products</h2>
-      <div style={{display:"flex", alignItems:"center", justifyContent:"center", margin:"auto"}}>
-      <tbody>
-        <tr>
-          <td>
-            <div className="product_area">
-              <Table>
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th></th>
-                    <th></th>
-                    <th>Quantity</th>
-                    <th>Subtotal</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map((item) => (
-                    <ItemComponent
-                      key={item.id}
-                      item={item}
-                      onRemove={removeItem}
-                      onQuantityChange={handleQuantityChange}
-                      handleSubstitute={() => handleSubstitute(item.id)}
-                    />
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-      <div className="totalprice" 
-        style={{display:"flex",
-                flexDirection:"column",
-                marginLeft: "100px", 
-                border:"2px gray double",
-                borderRadius:"10px",
-                height:"400px", 
-                width:"25%",
-                justifyContent:"center"}}>
-              <h2 style={{display:"flex", marginTop:"-250px", justifyContent:"center"}}> Total price </h2>
-              <table>
-                <tbody>
-                  <tr>
-                    <td className="a"> {totalProducts} products: </td>
-                    <td className="b"> ${total.toFixed(2)} </td>
-                  </tr>
-                  <tr>
-                    <td className="a">Total discount:</td>
-                    <td className="b"> ${discount.toFixed(2)}</td>
-                  </tr>
-                  <tr>
-                    <td className="a">Total: </td>
-                    <td className="b"> ${totalAmount.toFixed(2)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-    </div>
-    <div style={{display:"flex", justifyContent:"end", width:"100%", marginRight:"10px"}}>
-      <button onClick={handleNext}>Next</button>
-    </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "auto",
+        }}
+      >
+        <tbody>
+          <tr>
+            <td>
+              <div className="product_area">
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th></th>
+                      <th></th>
+                      <th>Quantity</th>
+                      <th>Subtotal</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((item) => (
+                      <ItemComponent
+                        key={item.id}
+                        item={item}
+                        onRemove={removeItem}
+                        onQuantityChange={handleQuantityChange}
+                        handleSubstitute={() => handleSubstitute(item.id)}
+                      />
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        <div
+          className="totalprice"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            marginLeft: "100px",
+            border: "2px gray double",
+            borderRadius: "10px",
+            height: "400px",
+            width: "25%",
+            justifyContent: "center",
+          }}
+        >
+          <h2
+            style={{
+              display: "flex",
+              marginTop: "-250px",
+              justifyContent: "center",
+            }}
+          >
+            {" "}
+            Total price{" "}
+          </h2>
+          <table>
+            <tbody>
+              <tr>
+                <td className="a"> {totalProducts} products: </td>
+                <td className="b"> ${total.toFixed(2)} </td>
+              </tr>
+              <tr>
+                <td className="a">Total discount:</td>
+                <td className="b"> ${discount.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td className="a">Total: </td>
+                <td className="b"> ${totalAmount.toFixed(2)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+          width: "100%",
+          marginRight: "10px",
+        }}
+      >
+        <button onClick={handleNext}>Next</button>
+      </div>
     </div>
   );
 };
 
 export default ItemList;
-
-
-  

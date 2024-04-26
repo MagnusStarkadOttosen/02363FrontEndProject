@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "./AppContext";
-import { Item } from "../types/Items";
 import { Table } from "react-bootstrap";
 
 const ConfirmOrderView:React.FC = () => {
@@ -18,6 +17,7 @@ const ConfirmOrderView:React.FC = () => {
    
 
 
+  
     const handleNext = () => {
         navigate("/items");
       };
