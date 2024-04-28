@@ -30,17 +30,15 @@ export const formReducer = (state: FormState, action: FormAction): FormState => 
             return {
                 ...state,
                 [action.payload.field]: action.payload.value,
-                errors: { ...state.errors, [action.payload.field]: "" }
             };
         case "SET_VALIDATION_RESULT":
             return {
                 ...state,
-                [action.payload.field]: action.payload.valid ? state[action.payload.field] : "",
                 errors: {
                     ...state.errors,
                     [action.payload.field]: action.payload.message
                 },
-                orderCity: action.payload.city || state.orderCity
+                orderCity: action.payload.city ?? state.orderCity
             };
         case "SET_LOADING":
             return {

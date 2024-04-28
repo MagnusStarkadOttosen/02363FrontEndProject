@@ -16,7 +16,7 @@ export const validatePhoneNumber = (phone: string) => {
     if (regex.test(phone)) {
         return { valid: true, message: "" };
     } else {
-        return { valid: false, message: "Invalid phone number. Must be exactly 8 digits long." };
+        return { valid: false, message: "Invalid phone number." };
     }
 };
 
@@ -26,5 +26,14 @@ export const validateEmail = (email: string) => {
         return { valid: true, message: "" };
     } else {
         return { valid: false, message: "Invalid email format." };
+    }
+};
+
+export const validateVAT = (vat: string) => {
+    const regex = /^(?:[A-Z]{2})?\d{8}$/;
+    if (regex.test(vat)) {
+        return { valid: true, message: "" };
+    } else {
+        return { valid: false, message: "Invalid VAT number." };
     }
 };

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormState, useFormDispatch } from "../context/FormContext";
 import "../styles/BillingAndDelivery.css";
-import { validatePhoneNumber, validateZip } from "../context/validation";
+import { validatePhoneNumber, validateVAT, validateZip } from "../context/validation";
 
 const BillingAndDelivery: React.FC = () => {
 
@@ -120,6 +120,20 @@ const BillingAndDelivery: React.FC = () => {
         }
     }, [formState.orderPhone, formState.orderCountry, dispatch]);
 
+    useEffect(() => {
+        if (formState.orderVAT) {
+            const result = validateVAT(formState.orderVAT);
+            dispatch({
+                type: "SET_VALIDATION_RESULT",
+                payload: {
+                    field: "orderVAT",
+                    valid: result.valid,
+                    message: result.message,
+                }
+            });
+        }
+    }, [formState.orderVAT, dispatch]);
+
     return (
         <form onSubmit={handleSubmit}>
             <div style={{ width: "100vw", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
@@ -140,12 +154,12 @@ const BillingAndDelivery: React.FC = () => {
                         <div>
                             <label className="control-label" htmlFor="orderPhone">Phone</label>
                             <input id="orderPhone" className='form-control' type='text' name='orderPhone' value={formState.orderPhone} onChange={handleInputChange}></input>
-                            {formState.errors.orderPhone && <div className="invalid-feedback">{formState.errors.orderPhone}</div>}
+                            {formState.errors.orderPhone && <div className="error-message">{formState.errors.orderPhone}</div>}
                         </div>
                         <div>
                             <label className="control-label" htmlFor="orderEmail">Email</label>
                             <input id="orderEmail" className='form-control' type='text' name='orderEmail' value={formState.orderEmail} onChange={handleInputChange}></input>
-                            {/* {!emailValid && <div className="invalid-feedback">Invalid email format.</div>} */}
+                            {formState.errors.orderEmail && <div className="error-message">{formState.errors.orderEmail}</div>}
                         </div>
                     </div>
                     <div className='row'>
@@ -201,7 +215,7 @@ const BillingAndDelivery: React.FC = () => {
                         <div>
                             <label className="control-label" htmlFor="orderVAT">VAT</label>
                             <input id="orderVAT" className='form-control' type='text' name='orderVAT' value={formState.orderVAT} onChange={handleInputChange}></input>
-                            {/* {!vatValid && <div className="invalid-feedback">Invalid VAT for Denmark.</div>} */}
+                            {formState.errors.orderVAT && <div className="error-message">{formState.errors.orderVAT}</div>}
                         </div>
                     </div>
                     <div className="checkbox">
@@ -241,7 +255,7 @@ const BillingAndDelivery: React.FC = () => {
                                                 event.preventDefault();
                                             }
                                         }}></input>
-                                    {/* {!zipBillingValid && <div className="invalid-feedback">Invalid ZIP code for Denmark.</div>} */}
+                                    {formState.errors.billingZip && <div className="error-message">{formState.errors.billingZip}</div>}
                                 </div>
                                 <div>
                                     <label className="control-label" htmlFor="billingCity">Billing City</label>
