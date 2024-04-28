@@ -10,3 +10,21 @@ export const validateZip = async (zip: string, country: string) => {
         return { valid: false, message: 'Network error during ZIP validation' };
     }
 };
+
+export const validatePhoneNumber = (phone: string) => {
+    const regex = /^\+?[0-9]{8}$/;
+    if (regex.test(phone)) {
+        return { valid: true, message: "" };
+    } else {
+        return { valid: false, message: "Invalid phone number. Must be exactly 8 digits long." };
+    }
+};
+
+export const validateEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (regex.test(email)) {
+        return { valid: true, message: "" };
+    } else {
+        return { valid: false, message: "Invalid email format." };
+    }
+};

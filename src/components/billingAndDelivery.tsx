@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormState, useFormDispatch } from "../context/FormContext";
 import "../styles/BillingAndDelivery.css";
-import { validateZip } from "../context/validation";
-import { CircularProgress } from '@material-ui/core';
+import { validatePhoneNumber, validateZip } from "../context/validation";
 
 const BillingAndDelivery: React.FC = () => {
 
@@ -68,7 +67,7 @@ const BillingAndDelivery: React.FC = () => {
         navigate("/items")
     };
 
-    useEffect(() => {
+    useEffect(() => { //Validation for ZIP
         if (formState.orderZip.length === 4 && formState.orderCountry === "DK") {
             const checkZip = async () => {
                 const result = await validateZip(formState.orderZip, formState.orderCountry);
@@ -86,14 +85,14 @@ const BillingAndDelivery: React.FC = () => {
         }
     }, [formState.orderZip, formState.orderCountry, dispatch]);
 
-    useEffect(() => {
+    useEffect(() => { //Validation for billing address zip code
         if (formState.billingZip.length === 4 && formState.billingCountry === "DK") {
             const checkZip = async () => {
                 const result = await validateZip(formState.billingZip, formState.billingCountry);
                 dispatch({
                     type: "SET_VALIDATION_RESULT",
                     payload: {
-                        field: "orderZip",
+                        field: "billingZip",
                         valid: result.valid,
                         message: result.message,
                         city: result.city
@@ -103,6 +102,23 @@ const BillingAndDelivery: React.FC = () => {
             checkZip();
         }
     }, [formState.billingZip, formState.billingCountry, dispatch]);
+
+    useEffect(() => { //Validate the phone number
+        if(formState.orderPhone.length >= 8 && formState.orderCountry === "DK") {
+            const checkPhone = async () => {
+                const result = await validatePhoneNumber(formState.orderPhone);
+                dispatch({
+                    type: "SET_VALIDATION_RESULT",
+                    payload: {
+                        field: "orderPhone",
+                        valid: result.valid,
+                        message: result.message,
+                    }
+                });
+            };
+            checkPhone();
+        }
+    }, [formState.orderPhone, formState.orderCountry, dispatch]);
 
     return (
         <form onSubmit={handleSubmit}>
@@ -124,7 +140,7 @@ const BillingAndDelivery: React.FC = () => {
                         <div>
                             <label className="control-label" htmlFor="orderPhone">Phone</label>
                             <input id="orderPhone" className='form-control' type='text' name='orderPhone' value={formState.orderPhone} onChange={handleInputChange}></input>
-                            {/* {!phoneValid && <div className="invalid-feedback">Invalid phone for Denmark.</div>} */}
+                            {formState.errors.orderPhone && <div className="invalid-feedback">{formState.errors.orderPhone}</div>}
                         </div>
                         <div>
                             <label className="control-label" htmlFor="orderEmail">Email</label>
@@ -161,7 +177,6 @@ const BillingAndDelivery: React.FC = () => {
                                     }
                                 }}></input>
                             {formState.errors.orderZip && <div className="error-message">{formState.errors.orderZip}</div>}
-                            {/* {!zipValid && <div className="invalid-feedback">Invalid ZIP code for Denmark.</div>} */}
                         </div>
                         <div>
                             <label className="control-label" htmlFor="orderCity">City</label>
