@@ -16,7 +16,6 @@ const BillingAndDelivery: React.FC = () => {
             | React.ChangeEvent<HTMLSelectElement>
             | React.ChangeEvent<HTMLTextAreaElement>
     ) => {
-        console.log("Handling input change for:", event.target.name, "with value:", event.target.value);
         dispatch({
             type: 'SET_FIELD',
             payload: { field: event.target.name as keyof typeof formState, value: event.target.value }
@@ -24,7 +23,6 @@ const BillingAndDelivery: React.FC = () => {
     };
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("Handling checkbox change for:", event.target.name, "with checked state:", event.target.checked);
         dispatch({
             type: 'SET_FIELD',
             payload: { field: event.target.name as keyof typeof formState, value: event.target.checked }
@@ -86,9 +84,7 @@ const BillingAndDelivery: React.FC = () => {
     }, [formState.orderZip, formState.orderCountry, dispatch]);
 
     useEffect(() => { //Validation for billing address zip code
-        console.log("test: ", formState.billingZip, " test: ", formState.billingCountry);
         if (formState.billingZip.length === 4 && formState.billingCountry === "DK") {
-            console.log("test2");
             const checkZip = async () => {
                 const result = await validateZip(formState.billingZip, formState.billingCountry);
                 dispatch({
