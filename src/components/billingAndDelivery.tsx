@@ -104,7 +104,7 @@ const BillingAndDelivery: React.FC = () => {
     }, [formState.billingZip, formState.billingCountry, dispatch]);
 
     useEffect(() => { //Validate the phone number
-        if(formState.orderPhone.length >= 8 && formState.orderCountry === "DK") {
+        if (formState.orderPhone.length >= 8 && formState.orderCountry === "DK") {
             const checkPhone = async () => {
                 const result = await validatePhoneNumber(formState.orderPhone);
                 dispatch({
@@ -154,12 +154,16 @@ const BillingAndDelivery: React.FC = () => {
                         <div>
                             <label className="control-label" htmlFor="orderPhone">Phone</label>
                             <input id="orderPhone" className='form-control' type='text' name='orderPhone' value={formState.orderPhone} onChange={handleInputChange}></input>
-                            {formState.errors.orderPhone && <div className="error-message">{formState.errors.orderPhone}</div>}
+                            <div className={`error-message ${formState.errors.orderPhone ? 'shown' : ''}`}>
+                                {formState.errors.orderPhone || " "}
+                            </div>
                         </div>
                         <div>
                             <label className="control-label" htmlFor="orderEmail">Email</label>
                             <input id="orderEmail" className='form-control' type='text' name='orderEmail' value={formState.orderEmail} onChange={handleInputChange}></input>
-                            {formState.errors.orderEmail && <div className="error-message">{formState.errors.orderEmail}</div>}
+                            <div className={`error-message ${formState.errors.orderEmail ? 'shown' : ''}`}>
+                                {formState.errors.orderEmail || " "}
+                            </div>
                         </div>
                     </div>
                     <div className='row'>
@@ -190,7 +194,9 @@ const BillingAndDelivery: React.FC = () => {
                                         event.preventDefault();
                                     }
                                 }}></input>
-                            {formState.errors.orderZip && <div className="error-message">{formState.errors.orderZip}</div>}
+                            <div className={`error-message ${formState.errors.orderZip ? 'shown' : ''}`}>
+                                {formState.errors.orderZip || " "}
+                            </div>
                         </div>
                         <div>
                             <label className="control-label" htmlFor="orderCity">City</label>
@@ -215,7 +221,9 @@ const BillingAndDelivery: React.FC = () => {
                         <div>
                             <label className="control-label" htmlFor="orderVAT">VAT</label>
                             <input id="orderVAT" className='form-control' type='text' name='orderVAT' value={formState.orderVAT} onChange={handleInputChange}></input>
-                            {formState.errors.orderVAT && <div className="error-message">{formState.errors.orderVAT}</div>}
+                            <div className={`error-message ${formState.errors.orderVAT ? 'shown' : ''}`}>
+                                {formState.errors.orderVAT || " "}
+                            </div>
                         </div>
                     </div>
                     <div className="checkbox">
@@ -248,6 +256,7 @@ const BillingAndDelivery: React.FC = () => {
                                         name='billingZip'
                                         value={formState.billingZip}
                                         onChange={handleInputChange}
+                                        maxLength={4}
                                         min="0"
                                         step="1"
                                         onKeyPress={(event) => { /*If it works it works*/
@@ -255,7 +264,9 @@ const BillingAndDelivery: React.FC = () => {
                                                 event.preventDefault();
                                             }
                                         }}></input>
-                                    {formState.errors.billingZip && <div className="error-message">{formState.errors.billingZip}</div>}
+                                    <div className={`error-message ${formState.errors.billingZip ? 'shown' : ''}`}>
+                                        {formState.errors.billingZip || " "}
+                                    </div>
                                 </div>
                                 <div>
                                     <label className="control-label" htmlFor="billingCity">Billing City</label>
