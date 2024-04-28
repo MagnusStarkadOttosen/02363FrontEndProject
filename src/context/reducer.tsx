@@ -15,7 +15,7 @@ export const initialFormState: FormState = {
     billingAddress: "",
     billingZip: "",
     billingCity: "",
-    billingCountry: "",
+    billingCountry: "DK",
     isTermsAccepted: false,
     isMarketingAccepted: true,
     orderComment: "",
@@ -38,7 +38,8 @@ export const formReducer = (state: FormState, action: FormAction): FormState => 
                     ...state.errors,
                     [action.payload.field]: action.payload.message
                 },
-                orderCity: action.payload.city ?? state.orderCity
+                orderCity: action.payload.field === 'orderZip' ? (action.payload.city || state.orderCity) : state.orderCity,
+                billingCity: action.payload.field === 'billingZip' ? (action.payload.city || state.billingCity) : state.billingCity,
             };
         case "SET_LOADING":
             return {

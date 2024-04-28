@@ -86,7 +86,9 @@ const BillingAndDelivery: React.FC = () => {
     }, [formState.orderZip, formState.orderCountry, dispatch]);
 
     useEffect(() => { //Validation for billing address zip code
+        console.log("test: ", formState.billingZip, " test: ", formState.billingCountry);
         if (formState.billingZip.length === 4 && formState.billingCountry === "DK") {
+            console.log("test2");
             const checkZip = async () => {
                 const result = await validateZip(formState.billingZip, formState.billingCountry);
                 dispatch({
