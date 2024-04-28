@@ -3,60 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { useFormState, useFormDispatch } from "../context/FormContext";
 import "../styles/BillingAndDelivery.css";
 import { validateZip } from "../context/validation";
+import { CircularProgress } from '@material-ui/core';
 
 const BillingAndDelivery: React.FC = () => {
 
     const formState = useFormState();
     const dispatch = useFormDispatch();
-
-    // const [isTermsAccepted, setIsTermsAccepted] = useState(false);
-    // const [isMarketingAccepted, setIsMarketingAccepted] = useState(true);
-    // const [orderComment, setOrderComment] = useState("");
-    // const [isBillingDifferent, setIsBillingDifferent] = useState(false);
-    // const [isLoading, setIsLoading] = useState(false);
-    // const [submissionError, setSubmissionError] = useState('');
-
-    // const [formState, setFormState] = useState({
-    //     orderFirstName: '',
-    //     orderLastName: '',
-    //     orderPhone: '',
-    //     orderEmail: '',
-    //     orderAddress1: '',
-    //     orderAddress2: '',
-    //     orderZip: '',
-    //     orderCity: '',
-    //     orderCountry: 'DK', // Default to Denmark
-    //     orderCompany: '',
-    //     orderVAT: '',
-    //     billingAddress: '',
-    //     billingZip: '',
-    //     billingCity: '',
-    //     billingCountry: 'DK', // Default to Denmark
-    // });
-
     const navigate = useNavigate();
-    // const [isValid, setIsValid] = useState({
-    //     orderFirstName: false,
-    //     orderLastName: false,
-    //     orderPhone: false,
-    //     orderEmail: false,
-    //     orderAddress1: false,
-    //     orderZip: false,
-    //     orderCity: false,
-    //     orderCompany: true,
-    //     orderVAT: true,
-    // });
+
     const handleInputChange = (
         event:
             | React.ChangeEvent<HTMLInputElement>
             | React.ChangeEvent<HTMLSelectElement>
             | React.ChangeEvent<HTMLTextAreaElement>
     ) => {
-        // const { name, value } = event.target;
-        // setFormState((prevState) => ({
-        //     ...prevState,
-        //     [name]: value,
-        // }));
         console.log("Handling input change for:", event.target.name, "with value:", event.target.value);
         dispatch({
             type: 'SET_FIELD',
@@ -74,171 +34,41 @@ const BillingAndDelivery: React.FC = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        // Simulate API call
-        // dispatch({ type: 'SUBMIT_FORM_SUCCESS' }); // or dispatch an error action depending on the API response
-        alert("Form submitted successfully!");
-        // navigate('/some-path-on-success'); // Uncomment to navigate on success
+
+        if (!formState.isTermsAccepted) {
+            alert("Please accept the terms and conditions.");
+            return;
+        }
+
+        dispatch({ type: 'SET_LOADING', payload: true });
+
+        try {
+            const response = await fetch("https://eoqbb4g980b4bm3.m.pipedream.net", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formState),
+            });
+
+            if (!response.ok) throw new Error("something went wrong.");
+
+            alert("Form submitted successfully!");
+        } catch (e) {
+            console.error("submission error: ", e);
+        } finally {
+            dispatch({ type: 'SET_LOADING', payload: false });
+        }
     };
 
-    // //Validation of Zip code only if country is denmark
-    // const [zipValid, setZipValid] = useState(true); //For zip validation
-    // const validateZip = async (zip: string, country: string) => {
-    //     if (country === "DK") {
-    //         try {
-    //             const response = await fetch(
-    //                 `https://api.dataforsyningen.dk/postnumre/${zip}`
-    //             );
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 console.log(data);
-    //                 setZipValid(true);
-    //                 setFormState((prevState) => ({ //This changes city. This is bad practice, you shouldn't change a controlled input like this.
-    //                     ...prevState,
-    //                     orderCity: data.navn,
-    //                 }));
-    //             } else {
-    //                 setZipValid(false);
-    //             }
-    //         } catch (error) {
-    //             console.error("Failed to validate ZIP code", error);
-    //             setZipValid(false);
-    //         }
-    //     } else {
-    //         setZipValid(true); //If not denmark assume zip is correct
-    //     }
-    // };
-
-    // //Validation of Zip code only if country is denmark
-    // const [zipBillingValid, setBillingZipValid] = useState(true); //For zip validation
-    // const validateBillingZip = async (zip: string, country: string) => {
-    //     if (country === "DK") {
-    //         try {
-    //             const response = await fetch(`https://api.dataforsyningen.dk/postnumre/${zip}`);
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 console.log(data);
-    //                 setBillingZipValid(true);
-    //                 setFormState(prevState => ({ //This changes city. This is bad practice, you shouldn't change a controlled input like this.
-    //                     ...prevState,
-    //                     billingCity: data.navn,
-    //                 }));
-    //             } else {
-    //                 setBillingZipValid(false);
-    //             }
-    //         } catch (error) {
-    //             console.error("Failed to validate ZIP code", error);
-    //             setBillingZipValid(false);
-    //         }
-    //     } else {
-    //         setBillingZipValid(true); //If not denmark assume zip is correct
-    //     }
-    // };
-
-    // //Validation of emails. Should be able to catch most emails but perfect validation of email is almost imposible.
-    // const [emailValid, setEmailValid] = useState(true); //For email validation
-    // const validateEmail = (email: string) => {
-    //     const valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email); //Black magic regex
-    //     setEmailValid(valid);
-    // };
-
-    // //TODO: it currently rejects all non-danish 8 digit numbers, it should not do this
-    // //Validates danish phone numbers are 8 digits
-    // const [phoneValid, setPhoneValid] = useState(true);
-    // const validatePhone = (phone: string, country: string) => {
-    //     if (country === "DK" && phone.length === 8) {
-    //         setPhoneValid(true);
-    //     } else {
-    //         setPhoneValid(false);
-    //     }
-    // };
-
-    // //TODO: it currently rejects all non-danish 8 digit VAT numbers, it should not do this
-    // //Validates danish VAT numbers are 8 digits
-    // const [vatValid, setVATValid] = useState(true);
-    // const validateVAT = (vat: string, country: string) => {
-    //     if (country === "DK" && vat.length === 8) {
-    //         setVATValid(true);
-    //     } else {
-    //         setVATValid(false);
-    //     }
-    // };
-
-    // //Revalidate then country changes
-    // useEffect(() => {
-    //     validateZip(formState.orderZip, formState.orderCountry);
-    // }, [formState.orderCountry, formState.orderZip]);
-
-    // useEffect(() => {
-    //     validateBillingZip(formState.billingZip, formState.billingCountry);
-    // }, [formState.billingCountry, formState.billingZip]);
-
-    // //Validate Email
-    // useEffect(() => {
-    //     validateEmail(formState.orderEmail);
-    // }, [formState.orderEmail]);
-
-    // //Validate Phone
-    // useEffect(() => {
-    //     validatePhone(formState.orderPhone, formState.orderCountry);
-    // }, [formState.orderCountry, formState.orderPhone]);
-
-    // //Validate VAT
-    // useEffect(() => {
-    //     validateVAT(formState.orderVAT, formState.orderCountry);
-    // }, [formState.orderCountry, formState.orderVAT]);
-
     const handleNext = () => {
-        // const allValid = Object.values(isValid).every((value) => value);
-        // if (allValid) {
         navigate("/payment");
-        // }   
     };
     const handleBack = () => {
         navigate("/items")
     };
 
-
-
-    // const handleSubmit = async (event: { preventDefault: () => void; }) => {
-    //     event.preventDefault();
-
-    //     if (!isTermsAccepted) {
-    //         alert("Please accept the terms and conditions.");
-    //         return;
-    //     }
-
-    //     setIsLoading(true);
-    //     setSubmissionError("");
-
-    //     try {
-    //         const response = await fetch("https://eoqbb4g980b4bm3.m.pipedream.net", {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //             },
-    //             body: JSON.stringify({
-    //                 ...formState,
-    //                 isTermsAccepted,
-    //                 isMarketingAccepted,
-    //                 orderComment,
-    //                 isBillingDifferent,
-    //             }),
-    //         });
-
-    //         if (!response.ok) throw new Error("something went wrong.");
-
-    //         alert("Form submitted successfully!");
-    //     } catch (e) {
-    //         console.error("submission error: ", e)
-    //         setSubmissionError("An error occurred.")
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-
-    // }
-
     useEffect(() => {
-        console.log("testing: ", formState.orderZip, "test: ", formState.orderCountry);
         if (formState.orderZip.length === 4 && formState.orderCountry === "DK") {
             const checkZip = async () => {
                 const result = await validateZip(formState.orderZip, formState.orderCountry);
@@ -255,6 +85,24 @@ const BillingAndDelivery: React.FC = () => {
             checkZip();
         }
     }, [formState.orderZip, formState.orderCountry, dispatch]);
+
+    useEffect(() => {
+        if (formState.billingZip.length === 4 && formState.billingCountry === "DK") {
+            const checkZip = async () => {
+                const result = await validateZip(formState.billingZip, formState.billingCountry);
+                dispatch({
+                    type: "SET_VALIDATION_RESULT",
+                    payload: {
+                        field: "orderZip",
+                        valid: result.valid,
+                        message: result.message,
+                        city: result.city
+                    }
+                });
+            };
+            checkZip();
+        }
+    }, [formState.billingZip, formState.billingCountry, dispatch]);
 
     return (
         <form onSubmit={handleSubmit}>
@@ -342,7 +190,7 @@ const BillingAndDelivery: React.FC = () => {
                         </div>
                     </div>
                     <div className="checkbox">
-                        <input type='checkbox' id="billingDifferent" checked={formState.isBillingDifferent} onChange={handleCheckboxChange} />
+                        <input type='checkbox' id="billingDifferent" name="isBillingDifferent" checked={formState.isBillingDifferent} onChange={handleCheckboxChange} />
                         <label className="checkbox-label" htmlFor="billingDifferent">Billing address is different from delivery address</label>
                     </div>
                     {formState.isBillingDifferent && (
@@ -388,28 +236,24 @@ const BillingAndDelivery: React.FC = () => {
                         </div>
                     )}
                     <div className="checkbox">
-                        <input type='checkbox' id="terms" checked={formState.isTermsAccepted} onChange={handleCheckboxChange} />
+                        <input type='checkbox' id="terms" name="isTermsAccepted" checked={formState.isTermsAccepted} onChange={handleCheckboxChange} />
                         <label className="checkbox-label" htmlFor="terms">I accept the terms and conditions</label>
                     </div>
                     <div className="checkbox">
-                        <input type='checkbox' id="marketing" checked={formState.isMarketingAccepted} onChange={handleCheckboxChange} />
+                        <input type='checkbox' id="marketing" name="isMarketingAccepted" checked={formState.isMarketingAccepted} onChange={handleCheckboxChange} />
                         <label className="checkbox-label" htmlFor="marketing">I want to receive spam</label>
                     </div>
                     <div className='commentBox'>
                         <label className="control-label" htmlFor="orderComment">OrderComment (Optional)</label>
                         <textarea id="orderComment" className="form-control" name="orderComment" value={formState.orderComment} onChange={handleInputChange} />
                     </div>
-                    {/* <div>
-                        <button onClick={handleSubmit} type="button">Submit Order</button>
-                        {isLoading && <div className="loader"></div>}
-                        {submissionError && <div className="error-message">{submissionError}</div>}
-                    </div> */}
                 </div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", width: "100%", marginRight: "10px" }}>
                 <button type="button" onClick={handleBack}>Back</button>
                 <button type="button" onClick={handleNext}>Next</button>
-                <button type="submit">Submit Order</button>
+                <button type="submit" disabled={formState.isLoading}>Submit Order</button>
+                {formState.isLoading && <div className="loader"></div>}
             </div>
         </form>
     )

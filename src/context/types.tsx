@@ -19,8 +19,10 @@ export interface FormState {
     orderComment: string;
     isBillingDifferent: boolean;
     errors: { [key: string]: string | undefined };
+    isLoading: boolean
 }
 
 export type FormAction =
     | { type: 'SET_FIELD', payload: { field: keyof FormState, value: any } }
-    | { type: 'SET_VALIDATION_RESULT'; payload: { field: keyof FormState; valid: boolean; message?: string; city?: string; } };
+    | { type: 'SET_VALIDATION_RESULT'; payload: { field: keyof FormState; valid: boolean; message?: string; city?: string; } }
+    | { type: 'SET_LOADING', payload: boolean }

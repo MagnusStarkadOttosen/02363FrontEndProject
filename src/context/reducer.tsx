@@ -20,7 +20,8 @@ export const initialFormState: FormState = {
     isMarketingAccepted: true,
     orderComment: "",
     isBillingDifferent: false,
-    errors: {}
+    errors: {},
+    isLoading: false
 }
 
 export const formReducer = (state: FormState, action: FormAction): FormState => {
@@ -40,6 +41,11 @@ export const formReducer = (state: FormState, action: FormAction): FormState => 
                     [action.payload.field]: action.payload.message
                 },
                 orderCity: action.payload.city || state.orderCity
+            };
+        case "SET_LOADING":
+            return {
+                ...state,
+                isLoading: action.payload,
             };
         default:
             return state;
