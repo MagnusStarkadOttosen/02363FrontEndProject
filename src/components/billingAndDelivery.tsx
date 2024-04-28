@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormState, useFormDispatch } from "../context/FormContext";
 import "../styles/BillingAndDelivery.css";
-import { validatePhoneNumber, validateVAT, validateZip } from "../context/validation";
+import { validateEmail, validatePhoneNumber, validateVAT, validateZip } from "../context/validation";
 
 const BillingAndDelivery: React.FC = () => {
 
@@ -122,7 +122,7 @@ const BillingAndDelivery: React.FC = () => {
         }
     }, [formState.orderPhone, formState.orderCountry, dispatch]);
 
-    useEffect(() => {
+    useEffect(() => { //Validates VAT
         if (formState.orderVAT) {
             const result = validateVAT(formState.orderVAT);
             dispatch({
@@ -135,6 +135,20 @@ const BillingAndDelivery: React.FC = () => {
             });
         }
     }, [formState.orderVAT, dispatch]);
+
+    useEffect(() => { //Validates email
+        if (formState.orderEmail) {
+            const result = validateEmail(formState.orderEmail);
+            dispatch({
+                type: "SET_VALIDATION_RESULT",
+                payload: {
+                    field: "orderEmail",
+                    valid: result.valid,
+                    message: result.message,
+                }
+            });
+        }
+    }, [formState.orderEmail, dispatch]);
 
     return (
         <form onSubmit={handleSubmit}>
