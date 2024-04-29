@@ -1,331 +1,326 @@
-import React, { useState, useEffect } from 'react';
-import '../styles/BillingAndDelivery.css';
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useFormState, useFormDispatch } from "../context/FormContext";
+import "../styles/BillingAndDelivery.css";
+import { validateEmail, validatePhoneNumber, validateVAT, validateZip } from "../context/validation";
 
+//This handles all the form
 const BillingAndDelivery: React.FC = () => {
 
-    const [isTermsAccepted, setIsTermsAccepted] = useState(false);
-    const [isMarketingAccepted, setIsMarketingAccepted] = useState(true);
-    const [orderComment, setOrderComment] = useState("");
-    const [isBillingDifferent, setIsBillingDifferent] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [submissionError, setSubmissionError] = useState('');
+    const formState = useFormState();
+    const dispatch = useFormDispatch();
+    const navigate = useNavigate();
 
-    const [formState, setFormState] = useState({
-        orderFirstName: '',
-        orderLastName: '',
-        orderPhone: '',
-        orderEmail: '',
-        orderAddress1: '',
-        orderAddress2: '',
-        orderZip: '',
-        orderCity: '',
-        orderCountry: 'DK', // Default to Denmark
-        orderCompany: '',
-        orderVAT: '',
-        billingAddress: '',
-        billingZip: '',
-        billingCity: '',
-        billingCountry: 'DK', // Default to Denmark
-    });
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
-        const { name, value } = event.target;
-        setFormState(prevState => ({
-            ...prevState,
-            [name]: value,
-        }));
+    //This handles text fields and the drop down menu for country
+    const handleInputChange = (
+        event:
+            | React.ChangeEvent<HTMLInputElement>
+            | React.ChangeEvent<HTMLSelectElement>
+            | React.ChangeEvent<HTMLTextAreaElement>
+    ) => {
+        dispatch({
+            type: 'SET_FIELD',
+            payload: { field: event.target.name as keyof typeof formState, value: event.target.value }
+        });
     };
 
-    //Validation of Zip code only if country is denmark
-    const [zipValid, setZipValid] = useState(true); //For zip validation
-    const validateZip = async (zip: string, country: string) => {
-        if (country === "DK") {
-            try {
-                const response = await fetch(`https://api.dataforsyningen.dk/postnumre/${zip}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
-                    setZipValid(true);
-                    setFormState(prevState => ({ //This changes city. This is bad practice, you shouldn't change a controlled input like this.
-                        ...prevState,
-                        orderCity: data.navn,
-                    }));
-                } else {
-                    setZipValid(false);
-                }
-            } catch (error) {
-                console.error("Failed to validate ZIP code", error);
-                setZipValid(false);
-            }
-        } else {
-            setZipValid(true); //If not denmark assume zip is correct
-        }
+    //This handles the 3 checkboxes
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch({
+            type: 'SET_FIELD',
+            payload: { field: event.target.name as keyof typeof formState, value: event.target.checked }
+        });
     };
 
-    //Validation of Zip code only if country is denmark
-    const [zipBillingValid, setBillingZipValid] = useState(true); //For zip validation
-    const validateBillingZip = async (zip: string, country: string) => {
-        if (country === "DK") {
-            try {
-                const response = await fetch(`https://api.dataforsyningen.dk/postnumre/${zip}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
-                    setBillingZipValid(true);
-                    setFormState(prevState => ({ //This changes city. This is bad practice, you shouldn't change a controlled input like this.
-                        ...prevState,
-                        billingCity: data.navn,
-                    }));
-                } else {
-                    setBillingZipValid(false);
-                }
-            } catch (error) {
-                console.error("Failed to validate ZIP code", error);
-                setBillingZipValid(false);
-            }
-        } else {
-            setBillingZipValid(true); //If not denmark assume zip is correct
-        }
-    };
-
-    //Validation of emails. Should be able to catch most emails but perfect validation of email is almost imposible.
-    const [emailValid, setEmailValid] = useState(true); //For email validation
-    const validateEmail = (email: string) => {
-        const valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email); //Black magic regex
-        setEmailValid(valid);
-    };
-
-    //TODO: it currently rejects all non-danish 8 digit numbers, it should not do this
-    //Validates danish phone numbers are 8 digits
-    const [phoneValid, setPhoneValid] = useState(true);
-    const validatePhone = (phone: string, country: string) => {
-        if(country === "DK" && phone.length === 8){
-            setPhoneValid(true);
-        }else{
-            setPhoneValid(false);
-        }
-    };
-
-    //TODO: it currently rejects all non-danish 8 digit VAT numbers, it should not do this
-    //Validates danish VAT numbers are 8 digits
-    const [vatValid, setVATValid] = useState(true);
-    const validateVAT = (vat: string, country: string) => {
-        if(country === "DK" && vat.length === 8){
-            setVATValid(true);
-        }else{
-            setVATValid(false);
-        }
-    };
-
-    //Revalidate then country changes
-    useEffect(() => {
-        validateZip(formState.orderZip, formState.orderCountry);
-    }, [formState.orderCountry, formState.orderZip]);
-
-    useEffect(() => {
-        validateBillingZip(formState.billingZip, formState.billingCountry);
-    }, [formState.billingCountry, formState.billingZip]);
-
-    //Validate Email
-    useEffect(() => {
-        validateEmail(formState.orderEmail);
-    }, [formState.orderEmail]);
-
-    //Validate Phone
-    useEffect(() => {
-        validatePhone(formState.orderPhone, formState.orderCountry);
-    }, [formState.orderCountry, formState.orderPhone]);
-
-    //Validate VAT
-    useEffect(() => {
-        validateVAT(formState.orderVAT, formState.orderCountry);
-    }, [formState.orderCountry, formState.orderVAT]);
-
-    const handleSubmit = async (event: { preventDefault: () => void; }) => {
+    //This handles the submit button
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if(!isTermsAccepted){
+        if (!formState.isTermsAccepted) { //This makes sure that the terms have being accepted
             alert("Please accept the terms and conditions.");
             return;
         }
 
-        setIsLoading(true);
-        setSubmissionError("");
+        dispatch({ type: 'SET_LOADING', payload: true }); //This makes the loading indicater show
 
-        try{
+        try {
+            //This post the form to requestbin. It should be a real database if this was a real product.
             const response = await fetch("https://eoqbb4g980b4bm3.m.pipedream.net", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    ...formState,
-                    isTermsAccepted,
-                    isMarketingAccepted,
-                    orderComment,
-                    isBillingDifferent,
-                }),
+                body: JSON.stringify(formState),
             });
 
-            if(!response.ok) throw new Error("something went wrong.");
+            if (!response.ok) throw new Error("something went wrong.");
 
-            alert("Form submitted successfully!");
-        } catch (e){
-            console.error("submission error: ", e)
-            setSubmissionError("An error occurred.")
-        } finally{
-            setIsLoading(false);
+            alert("Form submitted successfully!"); //Pop up validation
+        } catch (e) {
+            console.error("submission error: ", e);
+        } finally {
+            dispatch({ type: 'SET_LOADING', payload: false }); //Hides the loading indicator
+            navigate("/payment");
         }
+    };
 
-    }
+    //Goes to next page. (The submit button also goes to the next page, I leave this here incase we want to move the submit button to a different page)
+    // const handleNext = () => {
+    //     navigate("/payment");
+    // };
+    //
+    const handleBack = () => {
+        navigate("/items")
+    };
+
+    useEffect(() => { //Validation for ZIP
+        if (formState.orderZip.length === 4 && formState.orderCountry === "DK") {
+            const checkZip = async () => {
+                const result = await validateZip(formState.orderZip, formState.orderCountry);
+                dispatch({
+                    type: "SET_VALIDATION_RESULT",
+                    payload: {
+                        field: "orderZip",
+                        valid: result.valid,
+                        message: result.message,
+                        city: result.city
+                    }
+                });
+            };
+            checkZip();
+        }
+    }, [formState.orderZip, formState.orderCountry, dispatch]);
+
+    useEffect(() => { //Validation for billing ZIP code
+        if (formState.billingZip.length === 4 && formState.billingCountry === "DK") {
+            const checkZip = async () => {
+                const result = await validateZip(formState.billingZip, formState.billingCountry);
+                dispatch({
+                    type: "SET_VALIDATION_RESULT",
+                    payload: {
+                        field: "billingZip",
+                        valid: result.valid,
+                        message: result.message,
+                        city: result.city
+                    }
+                });
+            };
+            checkZip();
+        }
+    }, [formState.billingZip, formState.billingCountry, dispatch]);
+
+    useEffect(() => { //Validate the phone number
+        if (formState.orderPhone.length >= 8 && formState.orderCountry === "DK") {
+            const checkPhone = async () => {
+                const result = await validatePhoneNumber(formState.orderPhone);
+                dispatch({
+                    type: "SET_VALIDATION_RESULT",
+                    payload: {
+                        field: "orderPhone",
+                        valid: result.valid,
+                        message: result.message,
+                    }
+                });
+            };
+            checkPhone();
+        }
+    }, [formState.orderPhone, formState.orderCountry, dispatch]);
+
+    useEffect(() => { //Validates VAT
+        if (formState.orderVAT) {
+            const result = validateVAT(formState.orderVAT);
+            dispatch({
+                type: "SET_VALIDATION_RESULT",
+                payload: {
+                    field: "orderVAT",
+                    valid: result.valid,
+                    message: result.message,
+                }
+            });
+        }
+    }, [formState.orderVAT, dispatch]);
+
+    useEffect(() => { //Validates email
+        if (formState.orderEmail) {
+            const result = validateEmail(formState.orderEmail);
+            dispatch({
+                type: "SET_VALIDATION_RESULT",
+                payload: {
+                    field: "orderEmail",
+                    valid: result.valid,
+                    message: result.message,
+                }
+            });
+        }
+    }, [formState.orderEmail, dispatch]);
+
+    const getButtonClasses = () => {
+        if (formState.isLoading) return "button-disabled";
+        return formState.isTermsAccepted ? "button-active" : "button-default";
+    };
 
     return (
-        <div>
-            <h2>Billing and Delivery</h2>
-        
-        <div className='form-wrapper'>
-            <div className="row">
-                <div>
-                    <label className="control-label" htmlFor="orderFirstName">First Name</label>
-                    <input id="orderFirstName" className='form-control' type='text' name='orderFirstName' value={formState.orderFirstName} onChange={handleInputChange}></input>
-                </div>
-                <div>
-                    <label className="control-label" htmlFor="orderLastName">Last Name</label>
-                    <input id="orderLastName" className='form-control' type='text' name='orderLastName' value={formState.orderLastName} onChange={handleInputChange}></input>
-                </div>
-            </div>
-            <div className="row">
-                <div>
-                    <label className="control-label" htmlFor="orderPhone">Phone</label>
-                    <input id="orderPhone" className='form-control' type='text' name='orderPhone' value={formState.orderPhone} onChange={handleInputChange}></input>
-                    {!phoneValid && <div className="invalid-feedback">Invalid phone for Denmark.</div>}
-                </div>
-                <div>
-                    <label className="control-label" htmlFor="orderEmail">Email</label>
-                    <input id="orderEmail" className='form-control' type='text' name='orderEmail' value={formState.orderEmail} onChange={handleInputChange}></input>
-                    {!emailValid && <div className="invalid-feedback">Invalid email format.</div>}
-                </div>
-            </div>
-            <div className='row'>
-                <div>
-                    <label className="control-label" htmlFor="orderAddress1">Address 1</label>
-                    <input id="orderAddress1" className='form-control' type='text' name='orderAddress1' value={formState.orderAddress1} onChange={handleInputChange}></input>
-                </div>
-                <div>
-                    <label className="control-label" htmlFor="orderAddress2">Address 2</label>
-                    <input id="orderAddress2" className='form-control' type='text' name='orderAddress2' value={formState.orderAddress2} onChange={handleInputChange}></input>
-                </div>
-            </div>
-            <div className="row">
-                <div>
-                    <label className="control-label" htmlFor="orderZip">Zip code</label>
-                    <input 
-                        id="orderZip" 
-                        className='form-control' 
-                        type='text' 
-                        name='orderZip' 
-                        value={formState.orderZip} 
-                        onChange={handleInputChange} 
-                        min="0" 
-                        step="1" 
-                        onKeyPress={(event) => { /*If it works it works*/
-                            if (!/[0-9]/.test(event.key)) {
-                                event.preventDefault();
-                            }
-                        }}></input>
-                    {!zipValid && <div className="invalid-feedback">Invalid ZIP code for Denmark.</div>}
-                </div>
-                <div>
-                    <label className="control-label" htmlFor="orderCity">City</label>
-                    <input id="orderCity" className='form-control' type='text' name='orderCity' value={formState.orderCity} onChange={handleInputChange}></input>
-                </div>
-            </div>
-            <div>
-                <div>
-                    <label className="control-label" htmlFor="orderCountry">Country</label>
-                    <select id='orderCountry' className='form-control' name='orderCountry' value={formState.orderCountry} onChange={handleInputChange}>
-                        <option value="DK">
-                            Denmark
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div className="row">
-                <div>
-                    <label className="control-label" htmlFor="orderCompany">Company name</label>
-                    <input id="orderCompany" className='form-control' type='text' name='orderCompany' value={formState.orderCompany} onChange={handleInputChange}></input>
-                </div>
-                <div>
-                    <label className="control-label" htmlFor="orderVAT">VAT</label>
-                    <input id="orderVAT" className='form-control' type='text' name='orderVAT' value={formState.orderVAT} onChange={handleInputChange}></input>
-                    {!vatValid && <div className="invalid-feedback">Invalid VAT for Denmark.</div>}
-                </div>
-            </div>
-            <div className="checkbox">
-                <input type='checkbox' id="billingDifferent" checked={isBillingDifferent} onChange={(e)=>setIsBillingDifferent(e.target.checked)} />
-                <label className="checkbox-label" htmlFor="billingDifferent">Billing address is different from delivery address</label>
-            </div>
-            {isBillingDifferent && (
-                <div className="billing-address-fields">
-                    <div className='row'>
+        <form onSubmit={handleSubmit}>
+            <div style={{ width: "100vw", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                <h2>Billing and Delivery</h2>
+
+                <div className='form-wrapper'>
+                    <div className="row">
                         <div>
-                            <label className="control-label" htmlFor="billingAddress">Billing address</label>
-                            <input id="billingAddress" className='form-control' type='text' name='billingAddress' value={formState.billingAddress} onChange={handleInputChange}></input>
+                            <label className="control-label" htmlFor="orderFirstName">First Name</label>
+                            <input id="orderFirstName" className='form-control' type='text' name='orderFirstName' value={formState.orderFirstName} onChange={handleInputChange}></input>
                         </div>
                         <div>
-                    <label className="control-label" htmlFor="billingCountry">Billing Country</label>
-                    <select id='billingCountry' className='form-control' name='billingCountry' value={formState.billingCountry} onChange={handleInputChange}>
-                        <option value="DK">
-                            Denmark
-                        </option>
-                    </select>
-                </div>
+                            <label className="control-label" htmlFor="orderLastName">Last Name</label>
+                            <input id="orderLastName" className='form-control' type='text' name='orderLastName' value={formState.orderLastName} onChange={handleInputChange}></input>
+                        </div>
                     </div>
                     <div className="row">
                         <div>
-                            <label className="control-label" htmlFor="billingZip">Billing Zip code</label>
-                            <input 
-                                id="billingZip" 
-                                className='form-control' 
-                                type='text' 
-                                name='billingZip' 
-                                value={formState.billingZip} 
+                            <label className="control-label" htmlFor="orderPhone">Phone</label>
+                            <input id="orderPhone" className='form-control' type='text' name='orderPhone' value={formState.orderPhone} onChange={handleInputChange}></input>
+                            <div className={`error-message ${formState.errors.orderPhone ? 'shown' : ''}`}>
+                                {formState.errors.orderPhone || " "}
+                            </div>
+                        </div>
+                        <div>
+                            <label className="control-label" htmlFor="orderEmail">Email</label>
+                            <input id="orderEmail" className='form-control' type='text' name='orderEmail' value={formState.orderEmail} onChange={handleInputChange}></input>
+                            <div className={`error-message ${formState.errors.orderEmail ? 'shown' : ''}`}>
+                                {formState.errors.orderEmail || " "}
+                            </div>
+                        </div>
+                    </div>
+                    <div className='row'>
+                        <div>
+                            <label className="control-label" htmlFor="orderAddress1">Address 1</label>
+                            <input id="orderAddress1" className='form-control' type='text' name='orderAddress1' value={formState.orderAddress1} onChange={handleInputChange}></input>
+                        </div>
+                        <div>
+                            <label className="control-label" htmlFor="orderAddress2">Address 2</label>
+                            <input id="orderAddress2" className='form-control' type='text' name='orderAddress2' value={formState.orderAddress2} onChange={handleInputChange}></input>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div>
+                            <label className="control-label" htmlFor="orderZip">Zip code</label>
+                            <input
+                                id="orderZip"
+                                className='form-control'
+                                type='text'
+                                name='orderZip'
+                                value={formState.orderZip}
                                 onChange={handleInputChange}
-                                min="0" 
-                                step="1" 
+                                maxLength={4}
+                                min="0"
+                                step="1"
                                 onKeyPress={(event) => { /*If it works it works*/
                                     if (!/[0-9]/.test(event.key)) {
                                         event.preventDefault();
                                     }
                                 }}></input>
-                            {!zipBillingValid && <div className="invalid-feedback">Invalid ZIP code for Denmark.</div>}
+                            <div className={`error-message ${formState.errors.orderZip ? 'shown' : ''}`}>
+                                {formState.errors.orderZip || " "}
+                            </div>
                         </div>
                         <div>
-                            <label className="control-label" htmlFor="billingCity">Billing City</label>
-                            <input id="billingCity" className='form-control' type='text' name='billingCity' value={formState.billingCity} onChange={handleInputChange}></input>
+                            <label className="control-label" htmlFor="orderCity">City</label>
+                            <input id="orderCity" className='form-control' type='text' name='orderCity' value={formState.orderCity} onChange={handleInputChange} disabled={true}></input>
                         </div>
                     </div>
+                    <div>
+                        <div>
+                            <label className="control-label" htmlFor="orderCountry">Country</label>
+                            <select id='orderCountry' className='form-control' name='orderCountry' value={formState.orderCountry} onChange={handleInputChange}>
+                                <option value="DK">
+                                    Denmark
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div>
+                            <label className="control-label" htmlFor="orderCompany">Company name</label>
+                            <input id="orderCompany" className='form-control' type='text' name='orderCompany' value={formState.orderCompany} onChange={handleInputChange}></input>
+                        </div>
+                        <div>
+                            <label className="control-label" htmlFor="orderVAT">VAT</label>
+                            <input id="orderVAT" className='form-control' type='text' name='orderVAT' value={formState.orderVAT} onChange={handleInputChange}></input>
+                            <div className={`error-message ${formState.errors.orderVAT ? 'shown' : ''}`}>
+                                {formState.errors.orderVAT || " "}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="checkbox">
+                        <input type='checkbox' id="billingDifferent" name="isBillingDifferent" checked={formState.isBillingDifferent} onChange={handleCheckboxChange} />
+                        <label className="checkbox-label" htmlFor="billingDifferent">Billing address is different from delivery address</label>
+                    </div>
+                    {formState.isBillingDifferent && (
+                        <div className="billing-address-fields">
+                            <div className='row'>
+                                <div>
+                                    <label className="control-label" htmlFor="billingAddress">Billing address</label>
+                                    <input id="billingAddress" className='form-control' type='text' name='billingAddress' value={formState.billingAddress} onChange={handleInputChange}></input>
+                                </div>
+                                <div>
+                                    <label className="control-label" htmlFor="billingCountry">Billing Country</label>
+                                    <select id='billingCountry' className='form-control' name='billingCountry' value={formState.billingCountry} onChange={handleInputChange}>
+                                        <option value="DK">
+                                            Denmark
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div>
+                                    <label className="control-label" htmlFor="billingZip">Billing Zip code</label>
+                                    <input
+                                        id="billingZip"
+                                        className='form-control'
+                                        type='text'
+                                        name='billingZip'
+                                        value={formState.billingZip}
+                                        onChange={handleInputChange}
+                                        maxLength={4}
+                                        min="0"
+                                        step="1"
+                                        onKeyPress={(event) => { /*If it works it works*/
+                                            if (!/[0-9]/.test(event.key)) {
+                                                event.preventDefault();
+                                            }
+                                        }}></input>
+                                    <div className={`error-message ${formState.errors.billingZip ? 'shown' : ''}`}>
+                                        {formState.errors.billingZip || " "}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="control-label" htmlFor="billingCity">Billing City</label>
+                                    <input id="billingCity" className='form-control' type='text' name='billingCity' value={formState.billingCity} onChange={handleInputChange} disabled={true}></input>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    <div className="checkbox">
+                        <input type='checkbox' id="terms" name="isTermsAccepted" checked={formState.isTermsAccepted} onChange={handleCheckboxChange} />
+                        <label className="checkbox-label" htmlFor="terms">I accept the terms and conditions</label>
+                    </div>
+                    <div className="checkbox">
+                        <input type='checkbox' id="marketing" name="isMarketingAccepted" checked={formState.isMarketingAccepted} onChange={handleCheckboxChange} />
+                        <label className="checkbox-label" htmlFor="marketing">I want to receive spam</label>
+                    </div>
+                    <div className='commentBox'>
+                        <label className="control-label" htmlFor="orderComment">OrderComment (Optional)</label>
+                        <textarea id="orderComment" className="form-control" name="orderComment" value={formState.orderComment} onChange={handleInputChange} />
+                    </div>
                 </div>
-            )}
-            <div className="checkbox">
-                <input type='checkbox' id="terms" checked={isTermsAccepted} onChange={(e)=>setIsTermsAccepted(e.target.checked)} />
-                <label className="checkbox-label" htmlFor="terms">I accept the terms and conditions</label>
             </div>
-            <div className="checkbox">
-                <input type='checkbox' id="marketing" checked={isMarketingAccepted} onChange={(e)=>setIsMarketingAccepted(e.target.checked)} />
-                <label className="checkbox-label" htmlFor="marketing">I want to receive spam</label>
+            <div style={{ display: "flex", justifyContent: "end", width: "100%", marginRight: "10px" }}>
+                <button type="button" onClick={handleBack}>Back</button>
+                {/*<button type="button" onClick={handleNext}>Next</button>*/}
+                <button type="submit" className={getButtonClasses()} disabled={formState.isLoading}>Submit Order</button>
+                {formState.isLoading && <div className="loader"></div>}
             </div>
-            <div className='commentBox'>
-                <label className="control-label" htmlFor="orderComment">OrderComment (Optional)</label>
-                <textarea id="orderComment" className="form-control" value={orderComment} onChange={(e) => setOrderComment(e.target.value)}></textarea>
-            </div>
-            <div>
-                <button onClick={handleSubmit} type="button">Submit Order</button>
-                {isLoading && <div className="loader"></div>}
-                {submissionError && <div className="error-message">{submissionError}</div>}
-            </div>
-        </div>
-        </div>
+        </form>
     )
 }
 
