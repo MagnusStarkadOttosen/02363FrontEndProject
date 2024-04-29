@@ -225,7 +225,7 @@ const BillingAndDelivery: React.FC = () => {
                         </div>
                         <div>
                             <label className="control-label" htmlFor="orderCity">City</label>
-                            <input id="orderCity" className='form-control' type='text' name='orderCity' value={formState.orderCity} onChange={handleInputChange}></input>
+                            <input id="orderCity" className='form-control' type='text' name='orderCity' value={formState.orderCity} onChange={handleInputChange} disabled={true}></input>
                         </div>
                     </div>
                     <div>
@@ -295,7 +295,7 @@ const BillingAndDelivery: React.FC = () => {
                                 </div>
                                 <div>
                                     <label className="control-label" htmlFor="billingCity">Billing City</label>
-                                    <input id="billingCity" className='form-control' type='text' name='billingCity' value={formState.billingCity} onChange={handleInputChange}></input>
+                                    <input id="billingCity" className='form-control' type='text' name='billingCity' value={formState.billingCity} onChange={handleInputChange} disabled={true}></input>
                                 </div>
                             </div>
                         </div>
