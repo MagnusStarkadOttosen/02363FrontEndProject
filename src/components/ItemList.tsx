@@ -57,19 +57,7 @@ const ItemList: React.FC = () => {
   };
   //Function to handle the substitute button.
   
-//   const handleSubstitute = (currentItemId: string) => {
-//     setItems(prevItems => {
-//       return prevItems.map(item => {
-//         if (item.id === currentItemId) {
-//           const newItem = findSubstitute(item); // Finds the substitute item.
-//           if (newItem) {
-//             return { ...item, ...newItem, substituteItem: null }; // Updates the item with substitute item's properties.
-//           }
-//         }
-//         return item; // Returns the item unchanged if no substitute is found.
-//       });
-//     });
-// };
+
 const handleSubstitute = (currentItemId: string) => {
   setItems(prevItems => {
     return prevItems.map(item => {
