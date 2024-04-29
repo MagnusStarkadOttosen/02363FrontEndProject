@@ -11,7 +11,7 @@ describe("validateZip", () => {
     it("Test for invalid ZIP", async () => {
         const result = await validateZip("2222", "DK");
         expect(result.valid).toBe(false);
-        expect(result.message).toBe("Invalid ZIP code for Denmark");
+        expect(result.message).toBe("Invalid ZIP code");
     });
 
 });

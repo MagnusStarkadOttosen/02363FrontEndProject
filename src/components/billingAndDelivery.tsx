@@ -4,12 +4,14 @@ import { useFormState, useFormDispatch } from "../context/FormContext";
 import "../styles/BillingAndDelivery.css";
 import { validateEmail, validatePhoneNumber, validateVAT, validateZip } from "../context/validation";
 
+//This handles all the form
 const BillingAndDelivery: React.FC = () => {
 
     const formState = useFormState();
     const dispatch = useFormDispatch();
     const navigate = useNavigate();
 
+    //This handles text fields and the drop down menu for country
     const handleInputChange = (
         event:
             | React.ChangeEvent<HTMLInputElement>
@@ -22,6 +24,7 @@ const BillingAndDelivery: React.FC = () => {
         });
     };
 
+    //This handles the 3 checkboxes
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         dispatch({
             type: 'SET_FIELD',
@@ -29,17 +32,19 @@ const BillingAndDelivery: React.FC = () => {
         });
     };
 
+    //This handles the submit button
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (!formState.isTermsAccepted) {
+        if (!formState.isTermsAccepted) { //This makes sure that the terms have being accepted
             alert("Please accept the terms and conditions.");
             return;
         }
 
-        dispatch({ type: 'SET_LOADING', payload: true });
+        dispatch({ type: 'SET_LOADING', payload: true }); //This makes the loading indicater show
 
         try {
+            //This post the form to requestbin. It should be a real database if this was a real product.
             const response = await fetch("https://eoqbb4g980b4bm3.m.pipedream.net", {
                 method: "POST",
                 headers: {
@@ -50,17 +55,20 @@ const BillingAndDelivery: React.FC = () => {
 
             if (!response.ok) throw new Error("something went wrong.");
 
-            alert("Form submitted successfully!");
+            alert("Form submitted successfully!"); //Pop up validation
         } catch (e) {
             console.error("submission error: ", e);
         } finally {
-            dispatch({ type: 'SET_LOADING', payload: false });
+            dispatch({ type: 'SET_LOADING', payload: false }); //Hides the loading indicator
+            navigate("/payment");
         }
     };
 
-    const handleNext = () => {
-        navigate("/payment");
-    };
+    //Goes to next page. (The submit button also goes to the next page, I leave this here incase we want to move the submit button to a different page)
+    // const handleNext = () => {
+    //     navigate("/payment");
+    // };
+    //
     const handleBack = () => {
         navigate("/items")
     };
@@ -83,7 +91,7 @@ const BillingAndDelivery: React.FC = () => {
         }
     }, [formState.orderZip, formState.orderCountry, dispatch]);
 
-    useEffect(() => { //Validation for billing address zip code
+    useEffect(() => { //Validation for billing ZIP code
         if (formState.billingZip.length === 4 && formState.billingCountry === "DK") {
             const checkZip = async () => {
                 const result = await validateZip(formState.billingZip, formState.billingCountry);
@@ -303,7 +311,7 @@ const BillingAndDelivery: React.FC = () => {
             </div>
             <div style={{ display: "flex", justifyContent: "end", width: "100%", marginRight: "10px" }}>
                 <button type="button" onClick={handleBack}>Back</button>
-                <button type="button" onClick={handleNext}>Next</button>
+                {/*<button type="button" onClick={handleNext}>Next</button>*/}
                 <button type="submit" disabled={formState.isLoading}>Submit Order</button>
                 {formState.isLoading && <div className="loader"></div>}
             </div>
