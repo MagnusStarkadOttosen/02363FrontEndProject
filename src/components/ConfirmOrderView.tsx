@@ -37,9 +37,9 @@ const ConfirmOrderView:React.FC = () => {
                 <thead>
                   <tr>
                     <th>Product</th>
-                    <th></th>
-                    <th></th>
+                    
                     <th>Quantity</th>
+                    
                     <th>Subtotal</th>
                     <th></th>
                   </tr>
@@ -49,7 +49,6 @@ const ConfirmOrderView:React.FC = () => {
                         <tr key={index}>
                             <td>{item.name}</td>
                             <td>{item.quantity}</td>
-                            <td>${item.price}</td>
                             <td>${item.quantity * item.price}</td>
                         </tr>
                     ))}  
