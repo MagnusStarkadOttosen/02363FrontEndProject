@@ -154,6 +154,11 @@ const BillingAndDelivery: React.FC = () => {
         }
     }, [formState.orderEmail, dispatch]);
 
+    const getButtonClasses = () => {
+        if (formState.isLoading) return "button-disabled";
+        return formState.isTermsAccepted ? "button-active" : "button-default";
+    };
+
     return (
         <form onSubmit={handleSubmit}>
             <div style={{ width: "100vw", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
@@ -312,7 +317,7 @@ const BillingAndDelivery: React.FC = () => {
             <div style={{ display: "flex", justifyContent: "end", width: "100%", marginRight: "10px" }}>
                 <button type="button" onClick={handleBack}>Back</button>
                 {/*<button type="button" onClick={handleNext}>Next</button>*/}
-                <button type="submit" disabled={formState.isLoading}>Submit Order</button>
+                <button type="submit" className={getButtonClasses()} disabled={formState.isLoading}>Submit Order</button>
                 {formState.isLoading && <div className="loader"></div>}
             </div>
         </form>

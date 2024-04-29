@@ -64,3 +64,25 @@
 .error-message.shown {
     visibility: visible;
 }
+
+/* Button default state, possibly grey or a neutral color */
+.button-default {
+    background-color: grey;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+/* Button active state when terms are accepted */
+.button-active {
+    background-color: green;
+    color: white;
+}
+
+/* Button disabled state during loading or other conditions */
+.button-disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
