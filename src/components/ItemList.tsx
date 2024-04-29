@@ -4,7 +4,6 @@ import { AppContext } from "./AppContext.tsx";
 import ItemComponent from "./ItemComponent";
 import { Item } from "../types/Items";
 import { Table } from "react-bootstrap";
-import { i } from "vitest/dist/reporters-MmQN-57K.js";
 
 const ItemList: React.FC = () => {
   //Hook for the list of items.
