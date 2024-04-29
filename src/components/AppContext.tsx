@@ -17,9 +17,20 @@ interface AppContextType {
 export const AppContext = createContext<AppContextType | null>(null);
 
 export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-    const [totalAmount, setTotalAmount] = useState(0);
+    const [totalAmount, setTotalAmounts] = useState(0);
     const [totalQuantity, setTotalQuantity] = useState(0);
-    const [listItem, setListItem] = useState<Item[]>([]);
+    const [listItem, setListItems] = useState<Item[]>([]);
+    const [paymentMethod, setPaymentMethodState] = useState('');
+
+    const setPaymentMethod = (paymentMethod: string) => {
+        setPaymentMethodState(paymentMethod);
+    }
+    const setListItem = (items: Item[]) => {
+        setListItems(items);
+    }
+    const setTotalAmount = (newAmount: number) => {
+        setTotalAmounts(newAmount);
+    }
 
     const value = {
         totalAmount,
@@ -28,8 +39,8 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
         setTotalQuantity,
         listItem,
         setListItems: setListItem,
-        paymentMethod: '',
-        setPaymentMethod: () => {},
+        paymentMethod,
+        setPaymentMethod,
     };
 
     return (
@@ -38,5 +49,7 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
         </AppContext.Provider>
     );
 };
+export default {AppContext, AppProvider};
 
-// export default {AppContext, AppProvider};
+
+
