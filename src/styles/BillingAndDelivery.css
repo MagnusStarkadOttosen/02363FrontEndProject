@@ -54,6 +54,13 @@
 }
 
 .error-message {
+    font-size: 13px;
     color: red;
-    margin-top: 20px;
+    margin-top: 5px;
+    min-height: 20px;
+    visibility: hidden;
+}
+
+.error-message.shown {
+    visibility: visible;
 }

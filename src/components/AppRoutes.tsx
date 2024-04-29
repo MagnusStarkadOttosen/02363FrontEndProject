@@ -4,19 +4,21 @@ import ItemList from './ItemList';
 import BillingAndDelivery from './billingAndDelivery';
 import PaymentMethod from './PaymentMethod';
 import ConfirmOrderView from './ConfirmOrderView';
-import React from 'react';
+import { FormProvider } from "../context/FormContext"
 
 const AppRoutes = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/items" element={<ItemList />} />
-        <Route path="/billing" element={<BillingAndDelivery />} />
-        <Route path="/payment" element={<PaymentMethod />} />
-        <Route path="/confirm" element={<ConfirmOrderView />} />
-        <Route path="/" element={<ItemList />} />
-      </Routes>
-    </Router>
+    <FormProvider>
+      <Router>
+        <Routes>
+          <Route path="/items" element={<ItemList />} />
+          <Route path="/billing" element={<BillingAndDelivery />} />
+          <Route path="/payment" element={<PaymentMethod />} />
+          <Route path="/confirm" element={<ConfirmOrderView />} />
+          <Route path="/" element={<ItemList />} />
+        </Routes>
+      </Router>
+    </FormProvider>
   );
 };
 
