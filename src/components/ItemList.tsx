@@ -21,7 +21,7 @@ const ItemList: React.FC = () => {
   let total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   let discount = items.reduce((acc, item) => {
     let a = 0;
-    if (item.quantity > item.rebateQuantity) {
+    if (item.quantity >= item.rebateQuantity) {
       a = (item.price * item.rebatePercent * item.quantity) / 100;
     }
     return acc + a;
