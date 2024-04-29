@@ -5,7 +5,11 @@ import CreditCardPayment from "./CreditCardComponent";
 import GiftCardPayment from "./GiftCardComponent";
 import MobilePayPayment from "./MobilePayComponent";
 
-const PaymentMethod: React.FC = () => {
+interface PaymentMethodProps {
+  totalAmount: number;
+}
+
+const PaymentMethod: React.FC<PaymentMethodProps> = ({ totalAmount }) => {
   const [formState, setFormState] = useState({
     paymentMethod: "",
     secondaryPaymentMethod: "",
@@ -28,7 +32,7 @@ const PaymentMethod: React.FC = () => {
     );
   }
 
-  const { totalAmount } = context;
+  // const { totalAmount } = context;
 
   const [isValid, setIsValid] = useState({
     mobilePayNumber: true,

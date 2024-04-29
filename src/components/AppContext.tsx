@@ -29,7 +29,7 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
         listItem,
         setListItems: setListItem,
         paymentMethod: '',
-        setPaymentMethod: (paymentMethod: string) => {},
+        setPaymentMethod: () => {},
     };
 
     return (

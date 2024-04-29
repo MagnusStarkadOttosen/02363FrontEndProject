@@ -13,7 +13,7 @@ const AppRoutes = () => {
         <Routes>
           <Route path="/items" element={<ItemList />} />
           <Route path="/billing" element={<BillingAndDelivery />} />
-          <Route path="/payment" element={<PaymentMethod />} />
+          <Route path="/payment" element={<PaymentMethod totalAmount={0} />} />
           <Route path="/confirm" element={<ConfirmOrderView />} />
           <Route path="/" element={<ItemList />} />
         </Routes>
