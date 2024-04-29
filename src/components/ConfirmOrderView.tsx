@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "./AppContext";
-import { Item } from "../types/Items";
+import { AppContext } from "./AppContext.tsx";
 import { Table } from "react-bootstrap";
 
 const ConfirmOrderView:React.FC = () => {
@@ -49,9 +48,9 @@ const ConfirmOrderView:React.FC = () => {
                 {listItem.map((item, index) => (
                         <tr key={index}>
                             <td>{item.name}</td>
-                            <td>{item.amount}</td>
+                            <td>{item.quantity}</td>
                             <td>${item.price}</td>
-                            <td>${item.amount * item.price}</td>
+                            <td>${item.quantity * item.price}</td>
                         </tr>
                     ))}  
                    

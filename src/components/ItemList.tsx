@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "./AppContext";
+import { AppContext } from "./AppContext.tsx";
 import ItemComponent from "./ItemComponent";
 import { Item } from "../types/Items";
 import { Table } from "react-bootstrap";
+import { i } from "vitest/dist/reporters-MmQN-57K.js";
 
 const ItemList: React.FC = () => {
   //Hook for the list of items.
@@ -17,19 +18,33 @@ const ItemList: React.FC = () => {
   if (!context) {
     throw new Error("AppContext not found");
   }
+  //The total price for all items
+  let total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  let discount = items.reduce((acc, item) => {
+    let a = 0;
+    if (item.quantity > item.rebateQuantity) {
+      a = (item.price * item.rebatePercent * item.quantity) / 100;
+    }
+    return acc + a;
+  }, 0);
 
   const { setTotalAmount } = context;
   const { setListItems } = context;
 
   useEffect(() => {
-    const total = items.reduce(
-      (acc, item) => acc + item.price * item.amount,
+    const t = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    total = t;
+    discount = items.reduce(
+      (acc, item) =>
+        acc + (item.price * (1 - item.rebatePercent) * item.quantity) / 100,
       0
     );
-    setTotalAmount(total);
-    setListItems(items.filter(item => item.amount > 0));
-  }, [items, setTotalAmount]);
-
+    setTotalAmount(t);
+    // setListItems(items.filter(item=>item.quantity>0));
+    // console.log("xxxx");
+  }, [items]);
+   
+  
   const findSubstitute = (currentItem: Item): Item | undefined => {
     //Filters the items to find the ones with the same type and a higher price.
     let substitutes = items.filter(
@@ -41,40 +56,21 @@ const ItemList: React.FC = () => {
     return substitutes[0];
   };
   //Function to handle the substitute button.
-  const handleSubstitute = (currentItemId: string): Item | undefined => {
-    const currentItem = items.find((item) => item.id === currentItemId); //Finds the current item.
-    const newItem = currentItem ? findSubstitute(currentItem) : undefined; //Finds the substitute.
-    if (currentItem && newItem) {
-      currentItem.substituteItem = newItem;
-    }
-    return newItem;
-  };
-  // function to handle the list of items
-  const handleItemList = (currentItemId: string) => {
-    let updatedItems = [...items];
-    const currentItemIndex = updatedItems.findIndex(
-      (item) => item.id === currentItemId
-    );
-    if (currentItemIndex > -1) {
-      const currentItem = updatedItems[currentItemIndex];
-      const newItemIndex = updatedItems.findIndex(
-        (item) =>
-          item.id === currentItem.substituteItem?.id &&
-          item.price === currentItem.substituteItem?.price
-      );
-      if (newItemIndex > -1) {
-        updatedItems[newItemIndex].amount =
-          updatedItems[currentItemIndex].amount + 1;
-        updatedItems.splice(newItemIndex, 1);
-      }
-    }
-    setItems(updatedItems);
-  };
+  
+  const handleSubstitute = (currentItemId: string) => {
+    setItems(prevItems => {
+      return prevItems.map(item => {
+        if (item.id === currentItemId) {
+          const newItem = findSubstitute(item); // Finds the substitute item.
+          if (newItem) {
+            return { ...item, ...newItem, substituteItem: null }; // Updates the item with substitute item's properties.
+          }
+        }
+        return item; // Returns the item unchanged if no substitute is found.
+      });
+    });
+};
 
-
-  items.forEach((item) => {
-    handleSubstitute(item.id);
-  });
 
   //This calculates the initial subtotal for each item.
   useEffect(() => {
@@ -86,24 +82,30 @@ const ItemList: React.FC = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch('https://raw.githubusercontent.com/larsthorup/checkout-data/main/product-v2.json');
+        const response = await fetch(
+          "https://raw.githubusercontent.com/larsthorup/checkout-data/main/product-v2.json"
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error("Failed to fetch data");
         }
         const data: Item[] = await response.json();
         setItems(data);
         //   setLoading(false);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
         //   setLoading(false);
       }
     };
 
     fetchData();
-
   }, []);
 
   //Function to removes an item.
+
+  // const removeItem = (id: string) => {
+  //   const newItems = items.filter(item => item.id !== id);
+  //   setItems(newItems);
+  // };
   const removeItem = (id: string) => {
     setItems(items.filter((item) => item.id !== id));
     const newSubtotals = { ...subtotals };
@@ -112,106 +114,132 @@ const ItemList: React.FC = () => {
   };
 
   //Function to handle changes in an items quantity.
-  //This also updates the subtotal for the specified item.
   const handleQuantityChange = (id: string, subtotal: number) => {
+    // console.log(id + ' _ ' + subtotal);
+    let updatedItems = [...items];
+    const currentItemIndex = updatedItems.findIndex((item) => item.id === id);
+    if (currentItemIndex > -1) {
+      updatedItems[currentItemIndex].quantity = subtotal;
+    }
+    setItems(updatedItems);
     setSubtotals({ ...subtotals, [id]: subtotal });
   };
 
-  //The total price for all items
-  let total = Object.values(subtotals).reduce((acc, curr) => acc + curr, 0);
-  console.log(total);
-  let discount = 0;
-  let totalAmount = 0;
-  if (total > 300) {
-    discount = total;
-    totalAmount = total * 0.9;
-    discount = discount - totalAmount;
-  } else {
-    totalAmount = total;
-  }
-  console.log(total);
+// Update totalAmount in context
+setTotalAmount(total - discount);
+// update ListItems in context
+setListItems(items.filter(item => item.quantity > 0)); 
 
 
   const handleNext = () => navigate("/billing");
 
-
   //Maps each item to an itemComponent and display the total price.
   return (
-    <div style={{ width: "100vw", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-
+    <div
+      style={{
+        width: "100vw",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <h2>List Of Products</h2>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", margin: "auto" }}>
-        <tbody>
-          <tr>
-            <td>
-              <div className="product_area">
-                <Table>
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th></th>
-                      <th></th>
-                      <th>Quantity</th>
-                      <th>Subtotal</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {
-                      items.map((item) => (
-                        <ItemComponent
-                          key={item.id}
-                          item={item}
-                          onRemove={removeItem}
-                          onQuantityChange={handleQuantityChange}
-                          handleSubstitute={() => handleSubstitute(item.id)}
-                        />
-                      ))
-                    }
-                  </tbody >
-                </Table >
-              </div >
-            </td >
-          </tr >
-        </tbody >
-        <div className="totalprice"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            marginLeft: "100px",
-            border: "2px gray double",
-            borderRadius: "10px",
-            height: "400px",
-            width: "25%",
-            justifyContent: "center"
-          }}>
-          <h2 style={{ display: "flex", marginTop: "-250px", justifyContent: "center" }}> Total price </h2>
-          <table>
+      <div
+        style={{
+          display: "flex",
+          width: "90%",
+          maxWidth: "1000px",
+          gap: "1rem",
+          justifyContent: "center",
+        }}
+      >
+        <div style={{ width: "70%" }}>
+          <Table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th></th>
+                <th></th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
             <tbody>
-              <tr>
-                <td className="a"> {items.length} products: </td>
-                <td className="b"> ${total.toFixed(2)} </td>
-              </tr>
-              <tr>
-                <td className="a">Total discount:</td>
-                <td className="b"> ${discount.toFixed(2)}</td>
-              </tr>
-              <tr>
-                <td className="a">Total: </td>
-                <td className="b"> ${totalAmount.toFixed(2)}</td>
-              </tr>
+              {items.map((item) => (
+                <ItemComponent
+                  key={item.id}
+                  item={item}
+                  onRemove={removeItem}
+                  onQuantityChange={handleQuantityChange}
+                  handleSubstitute={() => handleSubstitute(item.id)}
+                />
+              ))}
             </tbody>
-          </table>
+          </Table>
         </div>
-      </div >
-      <div style={{ display: "flex", justifyContent: "end", width: "100%", marginRight: "10px" }}>
+        <div style={{ flex: 1 }}>
+          <div
+            className="totalprice"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginLeft: "100px",
+              border: "2px gray double",
+              borderRadius: "10px",
+              height: "400px",
+              width: "300px",
+              justifyContent: "center",
+            }}
+          >
+            <h2
+              style={{
+                display: "flex",
+                marginTop: "-250px",
+                justifyContent: "center",
+              }}
+            >
+              {" "}
+              Total price{" "}
+            </h2>
+            <table>
+              <tbody>
+                <tr>
+                  <td className="a">
+                    {" "}
+                    {items.reduce(
+                      (acc, it) => acc + it.quantity,
+                      0
+                    )} products:{" "}
+                  </td>
+                  <td className="b"> ${total.toFixed(2)} </td>
+                </tr>
+                <tr>
+                  <td className="a">Total discount:</td>
+                  <td className="b"> ${discount.toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td className="a">Total: </td>
+                  <td className="b"> ${(total - discount).toFixed(2)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+          width: "100%",
+          marginRight: "10px",
+        }}
+      >
         <button onClick={handleNext}>Next</button>
       </div>
-    </div >
+    </div>
   );
 };
 
 export default ItemList;
-
-
-

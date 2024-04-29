@@ -5,7 +5,7 @@ export interface Item{
     currency: string;
     type: string;
     offer: string;
-    amount: number;
+    quantity: number;
     gift: boolean;
     rebateQuantity: number;
     rebatePercent: number;
