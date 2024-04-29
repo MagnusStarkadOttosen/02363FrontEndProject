@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Item } from "../types/Items";
 import { Button } from "react-bootstrap";
 
-
 interface ItemProps {
   item: Item;
   onRemove: (id: string) => void;
   onQuantityChange: (id: string, quantity: number) => void;
   handleSubstitute: (itemId: string) => void;
- 
 }
 
 const ItemComponent: React.FC<ItemProps> = ({
@@ -37,10 +35,7 @@ const ItemComponent: React.FC<ItemProps> = ({
     //   onFindSubstitute(item);
     // }
     onQuantityChange(item.id, quantity);
-  
   }, [item.id, quantity, onQuantityChange]);
-
- 
 
   return (
     <tr>
@@ -49,21 +44,16 @@ const ItemComponent: React.FC<ItemProps> = ({
           <div>
             <img src={item.imageUrl} alt="Image" width="100" height="100" />
           </div>
-          
-                   
-       item.substituteItem ? (
-            {item.substituteItem && (
-              <div
-                onClick={() => handleSubstitute(item.id)}
-                style={{ cursor: "pointer", color: "blue" }}
-              >
-                Substitute offer: {item.substituteItem.name}
-              </div>
-            )}
+          {item.substituteItem ? (
+            <div
+              onClick={() => handleSubstitute(item.id)}
+              style={{ cursor: "pointer", color: "blue" }}
+            >
+              Substitute offer: {item.substituteItem.name}
+            </div>
           ) : (
             <div></div>
-          )
-    
+          )}
         </div>
       </td>
       <td>
