@@ -26,6 +26,13 @@ const ItemList: React.FC = () => {
     }
     return acc + a;
   }, 0);
+    //10% discount if you but more than 300DKK
+    let totalefterdiscount = 0;
+    if (total > 300) {
+        discount = total;
+        totalefterdiscount = total * 0.90;
+        discount = discount - totalefterdiscount;
+    } 
 
   const { setTotalAmount } = context;
   const { setListItems } = context;
