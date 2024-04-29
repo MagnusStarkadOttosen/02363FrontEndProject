@@ -1,9 +1,7 @@
 import React from 'react';
-import { AppProvider } from './components/AppContext';
+import { AppProvider } from './components/AppContext.tsx';
 import AppRoutes from './components/AppRoutes';
 import "./App.css";
-import ItemList from "./components/ItemList";
-import BillingAndDelivery from "./components/billingAndDelivery";
 
 function App() {
   
