@@ -3,7 +3,6 @@ import { Item } from '../types/Items';
 
 interface AppContextType {
     totalAmount: number;
-    setTotalAmount: (amount: number) => void;
     totalQuantity: number;
     setTotalQuantity:(quantity:number)=>void;
     listItem: Item[];
@@ -27,14 +26,23 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
     }
     const setListItem = (items: Item[]) => {
         setListItems(items);
-    }
-    const setTotalAmount = (newAmount: number) => {
-        setTotalAmounts(newAmount);
+        const t = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+        let discount = items.reduce((acc, item) =>{
+            let a = 0;
+            if (item.quantity >= item.rebateQuantity) {
+                a = (item.price * item.rebatePercent * item.quantity) / 100;
+            }
+            return acc + a;
+        },0);
+        if ((t-discount) > 300) {
+            discount += (t - discount) * 0.10;
+        }
+        setTotalAmounts(t-discount);
+           
     }
 
     const value = {
         totalAmount,
-        setTotalAmount,
         totalQuantity,
         setTotalQuantity,
         listItem,

@@ -35,7 +35,7 @@ const ItemComponent: React.FC<ItemProps> = ({
     //   onFindSubstitute(item);
     // }
     onQuantityChange(item.id, quantity);
-  }, [item.id, quantity, onQuantityChange]);
+  }, [item.id, quantity]);
 
   return (
     <tr>

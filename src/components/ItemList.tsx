@@ -27,27 +27,16 @@ const ItemList: React.FC = () => {
     return acc + a;
   }, 0);
     //10% discount if you but more than 300DKK
-    let totalefterdiscount = 0;
-    if (total > 300) {
-        discount = total;
-        totalefterdiscount = total * 0.90;
-        discount = discount - totalefterdiscount;
+    if ((total-discount) > 300) {
+      discount += (total - discount) * 0.10;
+       
     } 
 
-  const { setTotalAmount } = context;
   const { setListItems } = context;
 
   useEffect(() => {
-    const t = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    total = t;
-    discount = items.reduce(
-      (acc, item) =>
-        acc + (item.price * (1 - item.rebatePercent) * item.quantity) / 100,
-      0
-    );
-    setTotalAmount(t);
-    // setListItems(items.filter(item=>item.quantity>0));
-    // console.log("xxxx");
+    console.log('change');
+    setListItems(items);
   }, [items]);
    
   
@@ -96,7 +85,10 @@ const handleSubstitute = (currentItemId: string) => {
           throw new Error("Failed to fetch data");
         }
         const data: Item[] = await response.json();
-        setItems(data);
+        setItems(data.map((item) => {
+          item.quantity = 1;
+          return item;
+        }));
         //   setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -108,11 +100,6 @@ const handleSubstitute = (currentItemId: string) => {
   }, []);
 
   //Function to removes an item.
-
-  // const removeItem = (id: string) => {
-  //   const newItems = items.filter(item => item.id !== id);
-  //   setItems(newItems);
-  // };
   const removeItem = (id: string) => {
     setItems(items.filter((item) => item.id !== id));
     const newSubtotals = { ...subtotals };
@@ -131,11 +118,6 @@ const handleSubstitute = (currentItemId: string) => {
     setItems(updatedItems);
     setSubtotals({ ...subtotals, [id]: subtotal });
   };
-
-// Update totalAmount in context
-setTotalAmount(total - discount);
-// update ListItems in context
-setListItems(items.filter(item => item.quantity > 0)); 
 
 
   const handleNext = () => navigate("/billing");
